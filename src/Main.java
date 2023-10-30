@@ -45,15 +45,7 @@ public class Main {
                 femaleVolunteers.add(volunteer);
             }
         }
-        // 4.
-        Map<Task, Volunteer> capableVolunteers = new HashMap<>();
-        for(Task task : tasks){
-            for(Volunteer volunteer : volunteers){
-                if(task.isCapable(volunteer.getSkills())) {
-                    capableVolunteers.put(task, volunteer);
-                }
-            }
-        }
+
 
         // 8.
         Map<Task, List<SkillRequirement>> task_skills_is_hard_map = new HashMap<>();

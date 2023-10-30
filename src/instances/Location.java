@@ -19,15 +19,6 @@ public class Location {
         return lat;
     }
 
-    @Override
-    public String toString() {
-        return "Location{" +
-                "id='" + id + '\'' +
-                ", lat=" + lat +
-                ", lon=" + lon +
-                '}';
-    }
-
     public double getLon(){
         return lon;
     }
@@ -39,6 +30,17 @@ public class Location {
     public void setLat(double lat){
         this.lat = lat;
     }
+
+    @Override
+    public String toString() {
+        return "Location{" +
+                "id='" + id + '\'' +
+                ", lat=" + lat +
+                ", lon=" + lon +
+                '}';
+    }
+
+
 }
 
 

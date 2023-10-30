@@ -66,7 +66,4 @@ public class SkillRequirement {
         this.weight = weight;
     }
 
-    public boolean checkSkill(Skill skill) {
-        return this.skillId.equals(skill.getSkillId()) && this.minProficiency <= skill.getScore();
-    }
 }
