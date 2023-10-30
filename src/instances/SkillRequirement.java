@@ -65,4 +65,8 @@ public class SkillRequirement {
     public void setWeight(double weight){
         this.weight = weight;
     }
+
+    public boolean checkSkill(Skill skill) {
+        return this.minProficiency <= skill.getScore();
+    }
 }

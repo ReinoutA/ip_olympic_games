@@ -59,6 +59,11 @@ public class Task {
         this.skillrequirements = skillrequirements;
     }
 
+    public boolean isCapable(List<SkillRequirement> proposedRequirements) {
+        for(Skill)
+        return false;
+    }
+
     @Override
     public String toString() {
         return "Task{" +
