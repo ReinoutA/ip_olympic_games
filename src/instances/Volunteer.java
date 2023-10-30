@@ -12,6 +12,18 @@ public class Volunteer {
     private List<Skill> skills;
     private List<TaskType> taskTypes;
 
+    public void addPreferedLocationId(String preferredLocationId){
+        preferredLocationIds.add(preferredLocationId);
+    }
+
+    public void addSkill(Skill skill){
+        skills.add(skill);
+    }
+
+    public void addTaskType(TaskType taskType){
+        taskTypes.add(taskType);
+    }
+
     public String getId(){
         return id;
     }
@@ -56,6 +68,28 @@ public class Volunteer {
         this.isPresourced = isPresourced;
     }
 
-    
+    public void setLocationId(String locationId){
+        this.locationId = locationId;
+    }
+
+    public void setPreferredLocationIds(List<String> preferredLocationIds){
+        this.preferredLocationIds = preferredLocationIds;
+    }
+
+    public void setAvailableDays(int availableDays){
+        this.availableDays = availableDays;
+    }
+
+    public void setSkills(List<Skill> skills){
+        this.skills = skills;
+    }
+
+    public void setTaskTypes(List<TaskType> taskTypes){
+        this.taskTypes = taskTypes;
+    }
+
+
+
+
 
 }
