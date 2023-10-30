@@ -44,6 +44,15 @@ public class Main {
             }
         }
 
+        Map<Task, Volunteer> capableVolunteers = new HashMap<>();
+        for(Task task : tasks){
+            for(Volunteer volunteer : volunteers){
+                if(task.isCapable(volunteer.getSkills())) {
+                    capableVolunteers.put(task, volunteer);
+                }
+            }
+        }
+
     }
 
 }

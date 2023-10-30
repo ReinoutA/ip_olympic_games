@@ -1,24 +1,24 @@
 package instances;
 
 public class Skill {
-    private String name;
+    private String skillId;
     private int score;
 
     public Skill(String name){
-        this.name = name;
+        this.skillId = name;
     }
 
     public Skill(String name, int score){
-        this.name = name;
+        this.skillId = name;
         this.score = score;
     }
 
-    public String getName(){
-        return name;
+    public String getSkillId(){
+        return skillId;
     }
 
     public void setName(String name){
-        this.name = name;
+        this.skillId = name;
     }
 
     public int getScore(){
@@ -28,7 +28,7 @@ public class Skill {
     @Override
     public String toString() {
         return "Skill{" +
-                "name='" + name + '\'' +
+                "name='" + skillId + '\'' +
                 ", score=" + score +
                 '}';
     }

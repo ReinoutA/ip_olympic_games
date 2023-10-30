@@ -67,6 +67,6 @@ public class SkillRequirement {
     }
 
     public boolean checkSkill(Skill skill) {
-        return this.minProficiency <= skill.getScore();
+        return this.skillId.equals(skill.getSkillId()) && this.minProficiency <= skill.getScore();
     }
 }

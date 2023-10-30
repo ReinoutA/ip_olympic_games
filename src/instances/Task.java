@@ -59,9 +59,15 @@ public class Task {
         this.skillrequirements = skillrequirements;
     }
 
-    public boolean isCapable(List<SkillRequirement> proposedRequirements) {
-        for(Skill)
-        return false;
+    public boolean isCapable(List<Skill> proposedSkills) {
+        for (Skill proposedSkill : proposedSkills){
+            for (SkillRequirement skillRequirement : skillrequirements){
+                if (!skillRequirement.checkSkill(proposedSkill)) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     @Override
