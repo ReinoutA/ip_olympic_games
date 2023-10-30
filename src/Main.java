@@ -27,6 +27,7 @@ public class Main {
         List<Task> tasks = taskFactory.createTasksFromJSON(PATH);
         List<Volunteer> volunteers = volunteerFactory.createVolunteersFromJSON(PATH);
 
+        // 1. Presourced
         List<Volunteer> presourcedVolunteers = new ArrayList<>();
         for(Volunteer volunteer : volunteers){
             if(volunteer.isPresourced()){
@@ -34,6 +35,7 @@ public class Main {
             }
         }
 
+        // 2. and 3. Male-Female
         List<Volunteer> maleVolunteers = new ArrayList<>();
         List<Volunteer> femaleVolunteers = new ArrayList<>();
         for(Volunteer volunteer : volunteers){
@@ -43,7 +45,7 @@ public class Main {
                 femaleVolunteers.add(volunteer);
             }
         }
-
+        // 4.
         Map<Task, Volunteer> capableVolunteers = new HashMap<>();
         for(Task task : tasks){
             for(Volunteer volunteer : volunteers){
@@ -53,6 +55,7 @@ public class Main {
             }
         }
 
+        // 8.
         Map<Task, List<SkillRequirement>> task_skills_is_hard_map = new HashMap<>();
         Map<Task, List<SkillRequirement>> task_skills_is_soft_map = new HashMap<>();
 
