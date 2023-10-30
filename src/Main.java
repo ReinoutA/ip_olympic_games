@@ -27,7 +27,12 @@ public class Main {
         List<Task> tasks = taskFactory.createTasksFromJSON(PATH);
         List<Volunteer> volunteers = volunteerFactory.createVolunteersFromJSON(PATH);
 
-
+        List<Volunteer> presourcedVolunteers = new ArrayList<>();
+        for(Volunteer volunteer : volunteers){
+            if(volunteer.isPresourced()){
+                presourcedVolunteers.add(volunteer);
+            }
+        }
 
 
 

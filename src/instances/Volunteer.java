@@ -38,11 +38,11 @@ public class Volunteer {
         return id;
     }
 
-    public boolean getIsMale(){
+    public boolean isMale(){
         return isMale;
     }
 
-    public boolean getIsPresourced(){
+    public boolean isPresourced(){
         return isPresourced;
     }
 
