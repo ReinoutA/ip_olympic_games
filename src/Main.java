@@ -34,9 +34,15 @@ public class Main {
             }
         }
 
-
-
-
+        List<Volunteer> maleVolunteers = new ArrayList<>();
+        List<Volunteer> femaleVolunteers = new ArrayList<>();
+        for(Volunteer volunteer : volunteers){
+            if(volunteer.isMale()){
+                maleVolunteers.add(volunteer);
+            } else {
+                femaleVolunteers.add(volunteer);
+            }
+        }
 
     }
 
