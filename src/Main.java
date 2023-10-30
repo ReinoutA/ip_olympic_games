@@ -1,4 +1,4 @@
-import factories.LocationFactory;
+import factories.*;
 import gurobi.*;
 import instances.*;
 
@@ -10,14 +10,26 @@ public class Main {
     }
 
     public static void main(String[] args) throws IOException {
-        String PATH = "IP_Olympic_Games/resources/toy_problem.json";
+
+        final String PATH = "IP_Olympic_Games/resources/toy_problem.json";
+
         LocationFactory locationFactory = new LocationFactory();
+        SkillFactory skillFactory = new SkillFactory();
+        WeightFactory weightFactory = new WeightFactory();
+        TaskTypeFactory taskTypeFactory = new TaskTypeFactory();
+        TaskFactory taskFactory = new TaskFactory();
 
         List<Location> locations = locationFactory.createLocationsFromJSON(PATH);
+        List<Skill> skills = skillFactory.createSkillsFromJSON(PATH);
+        List<Weight> weights = weightFactory.createWeightsFromJSON(PATH);
+        List<TaskType> taskTypes = taskTypeFactory.createTaskTypesFromJSON(PATH);
+        List<Task> tasks = taskFactory.createTasksFromJSON(PATH);
 
-        for(Location l : locations){
-            System.out.println(locations);
-        }
+        for(Task t : tasks) System.out.println(t);
+
+
+
+
     }
 
 }
