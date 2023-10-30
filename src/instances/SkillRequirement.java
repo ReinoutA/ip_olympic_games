@@ -34,7 +34,7 @@ public class SkillRequirement {
         return minProficiency;
     }
 
-    public boolean getIsHard(){
+    public boolean isHard(){
         return isHard;
     }
 

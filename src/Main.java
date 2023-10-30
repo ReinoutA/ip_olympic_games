@@ -53,6 +53,25 @@ public class Main {
             }
         }
 
+        Map<Task, List<SkillRequirement>> task_skills_is_hard_map = new HashMap<>();
+        Map<Task, List<SkillRequirement>> task_skills_is_soft_map = new HashMap<>();
+
+        for(Task t : tasks){
+            List<SkillRequirement> task_skills_is_soft = new ArrayList<>();
+            List<SkillRequirement> task_skills_is_hard = new ArrayList<>();
+            for(SkillRequirement s : t.getSkillRequirements()){
+                if(s.isHard()){
+                    task_skills_is_hard.add(s);
+                }else{
+                    task_skills_is_soft.add(s);
+                }
+            }
+            task_skills_is_hard_map.put(t, task_skills_is_hard);
+            task_skills_is_soft_map.put(t, task_skills_is_soft);
+        }
     }
 
 }
+
+
+
