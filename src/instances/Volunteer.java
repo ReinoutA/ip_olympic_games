@@ -12,6 +12,16 @@ public class Volunteer {
     private List<Skill> skills;
     private List<TaskType> taskTypes;
 
+    public Volunteer (String id, boolean isMale, boolean isPresourced, String locationId, List<String> preferredLocationIds, int availableDays, List<Skill> skills, List<TaskType> taskTypes){
+        this.id = id;
+        this.isMale = isMale;
+        this.isPresourced = isPresourced;
+        this.locationId = locationId;
+        this.preferredLocationIds = preferredLocationIds;
+        this.availableDays = availableDays;
+        this.skills = skills;
+        this.taskTypes = taskTypes;
+    }
     public void addPreferedLocationId(String preferredLocationId){
         preferredLocationIds.add(preferredLocationId);
     }
