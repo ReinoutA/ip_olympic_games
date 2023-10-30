@@ -1,0 +1,6 @@
+
+.idea/libraries/gurobi_javadoc.xml
+.idea/libraries/json.xml
+.idea/libraries/gurobi.xml
+.idea/libraries/*
+*.xml
