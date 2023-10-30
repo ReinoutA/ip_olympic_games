@@ -98,6 +98,25 @@ public class Volunteer {
         this.taskTypes = taskTypes;
     }
 
+    public int getScoreOfTaskType(String taskTypeId){
+        for(TaskType taskType : taskTypes){
+            if(taskTypeId.equals(taskType.getName())){
+                return taskType.getScore();
+            }
+        }
+        // TODO IS DIT 0 OF -1?
+        return -1;
+    }
+
+    public int getScoreOfSkill(String skillId){
+        for(Skill s : skills){
+            if(s.equals(skillId)){
+                return s.getScore();
+            }
+        }
+        return -1;
+    }
+
     @Override
     public String toString() {
         return "Volunteer{" +

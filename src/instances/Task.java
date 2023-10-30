@@ -31,6 +31,7 @@ public class Task {
         return demand;
     }
 
+    public int getDays(){return days;}
     public String getTaskTypeId(){
         return taskTypeId;
     }
