@@ -59,6 +59,18 @@ public class Task {
         this.skillrequirements = skillrequirements;
     }
 
+    @Override
+    public String toString() {
+        return "Task{" +
+                "id='" + id + '\'' +
+                ", locationId='" + locationId + '\'' +
+                ", demand=" + demand +
+                ", days=" + days +
+                ", taskTypeId='" + taskTypeId + '\'' +
+                ", skillrequirements=" + skillrequirements +
+                '}';
+    }
+
     public void addSkillRequirement(SkillRequirement skillRequirement){
         skillrequirements.add(skillRequirement);
     }

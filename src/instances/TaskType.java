@@ -13,6 +13,14 @@ public class TaskType {
         this.score = score;
     }
 
+    @Override
+    public String toString() {
+        return "TaskType{" +
+                "name='" + name + '\'' +
+                ", score=" + score +
+                '}';
+    }
+
     public void setName(String name){
         this.name = name;
     }

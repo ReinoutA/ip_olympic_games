@@ -24,4 +24,12 @@ public class Weight {
     public void setWeight(double weight){
         this.weight = weight;
     }
+
+    @Override
+    public String toString() {
+        return "Weight{" +
+                "name='" + name + '\'' +
+                ", weight=" + weight +
+                '}';
+    }
 }

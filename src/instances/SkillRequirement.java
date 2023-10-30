@@ -15,6 +15,17 @@ public class SkillRequirement {
         this.weight = weight;
     }
 
+    @Override
+    public String toString() {
+        return "SkillRequirement{" +
+                "skillId='" + skillId + '\'' +
+                ", minProficiency=" + minProficiency +
+                ", isHard=" + isHard +
+                ", proportion=" + proportion +
+                ", weight=" + weight +
+                '}';
+    }
+
     public String getSkillid(){
         return skillId;
     }

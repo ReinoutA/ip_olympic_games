@@ -25,6 +25,14 @@ public class Skill {
         return score;
     }
 
+    @Override
+    public String toString() {
+        return "Skill{" +
+                "name='" + name + '\'' +
+                ", score=" + score +
+                '}';
+    }
+
     public void setScore(int score){
         this.score = score;
     }

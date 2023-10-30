@@ -88,7 +88,19 @@ public class Volunteer {
         this.taskTypes = taskTypes;
     }
 
-
+    @Override
+    public String toString() {
+        return "Volunteer{" +
+                "id='" + id + '\'' +
+                ", isMale=" + isMale +
+                ", isPresourced=" + isPresourced +
+                ", locationId='" + locationId + '\'' +
+                ", preferredLocationIds=" + preferredLocationIds +
+                ", availableDays=" + availableDays +
+                ", skills=" + skills +
+                ", taskTypes=" + taskTypes +
+                '}';
+    }
 
 
 

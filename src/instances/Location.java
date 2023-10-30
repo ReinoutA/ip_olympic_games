@@ -19,6 +19,15 @@ public class Location {
         return lat;
     }
 
+    @Override
+    public String toString() {
+        return "Location{" +
+                "id='" + id + '\'' +
+                ", lat=" + lat +
+                ", lon=" + lon +
+                '}';
+    }
+
     public double getLon(){
         return lon;
     }
