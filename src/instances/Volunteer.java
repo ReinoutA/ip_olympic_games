@@ -11,6 +11,7 @@ public class Volunteer {
     private int availableDays;
     private List<Skill> skills;
     private List<TaskType> taskTypes;
+    private List<Task> canDoTasks;
 
     public Volunteer (String id, boolean isMale, boolean isPresourced, String locationId, List<String> preferredLocationIds, int availableDays, List<Skill> skills, List<TaskType> taskTypes){
         this.id = id;
@@ -21,7 +22,9 @@ public class Volunteer {
         this.availableDays = availableDays;
         this.skills = skills;
         this.taskTypes = taskTypes;
+        this.canDoTasks = new ArrayList<>();
     }
+
     public void addPreferedLocationId(String preferredLocationId){
         preferredLocationIds.add(preferredLocationId);
     }
@@ -48,6 +51,10 @@ public class Volunteer {
 
     public String getLocationId(){
         return locationId;
+    }
+
+    public List<Task> getCanDoTasks(){
+        return canDoTasks;
     }
 
     public List<String> getPreferredLocationIds(){
@@ -117,6 +124,18 @@ public class Volunteer {
         return -1;
     }
 
+    public void addCanDoTasks(List<Task> tasks){
+        for(Task t : tasks){
+            if(preferredLocationIds.contains(t.getLocationId())){
+                if(availableDays >= t.getDays()){
+                    if(this.getScoreOfTaskType(t.getTaskTypeId()) != 0){
+                        canDoTasks.add(t);
+                    }
+                }
+            }
+        }
+    }
+
     @Override
     public String toString() {
         return "Volunteer{" +
@@ -130,7 +149,4 @@ public class Volunteer {
                 ", taskTypes=" + taskTypes +
                 '}';
     }
-
-
-
 }
