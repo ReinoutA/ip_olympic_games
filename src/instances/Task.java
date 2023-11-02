@@ -77,6 +77,14 @@ public class Task {
         return skillrequirementsWithHardConstraints;
     }
 
+    public List<Volunteer> getCanBeDoneByVolunteers(){
+        return canBeDoneByVolunteers;
+    }
+
+    public Map<SkillRequirement, List<Volunteer>> getVolunteersThatFullFillMinimumProficiencyForSkillRequirement(){
+        return volunteersThatFullFillMinimumProficiencyForSkillRequirement;
+    }
+
     public void createCanBeDoneByVolunteersList(List<Volunteer> volunteers){
         for(Volunteer v : volunteers){
             // locatie OKE

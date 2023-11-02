@@ -10,7 +10,7 @@ public class Main {
     public Main() throws GRBException {
     }
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, GRBException {
 
         final String PATH = "IP_Olympic_Games/resources/toy_problem.json";
 
@@ -66,7 +66,43 @@ public class Main {
         for (Task t : tasks) {
             t.createSkillRequirementsSoftHardConstraintsLists();
         }
+
+
+        GRBEnv env = new GRBEnv();
+        GRBModel model = new GRBModel(env);
+        model.set(GRB.IntAttr.ModelSense, GRB.MAXIMIZE);
+
+        // Definieer de beslissingsvariabelen x_vt
+        GRBVar[][] x_vt = new GRBVar[volunteers.size()][tasks.size()];
+        for (int v = 0; v < volunteers.size(); v++) {
+            for (int t = 0; t < tasks.size(); t++) {
+                x_vt[v][t] = model.addVar(0.0, 1.0, 0.0, GRB.BINARY, "x_" + v + "_" + t);
+            }
+        }
+
+        // Definieer de beslissingsvariabele y
+        GRBVar y = model.addVar(0, volunteers.size(), 0.0, GRB.INTEGER, "y");
+
+
+        // Constraint 1
+        for(int t = 0; t < tasks.size(); t++){
+            GRBLinExpr constraint = new GRBLinExpr();
+            for(int v = 0; v < volunteers.size(); v++){
+                if(tasks.get(t).getCanBeDoneByVolunteers().contains(volunteers.get(v))){
+                    constraint.addTerm(1.0, x_vt[v][t]);
+                }
+            }
+            model.addConstr(constraint, GRB.LESS_EQUAL, 1.0, "Constraint1");
+        }
+
+
+
+
+
+
     }
+
+
 
 
 
