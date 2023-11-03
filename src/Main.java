@@ -20,6 +20,7 @@ public class Main {
         TaskTypeFactory taskTypeFactory = new TaskTypeFactory();
         TaskFactory taskFactory = new TaskFactory();
         VolunteerFactory volunteerFactory = new VolunteerFactory();
+        Haversine haversine = new Haversine();
 
         List<Location> locations = locationFactory.createLocationsFromJSON(PATH);
         List<Skill> skills = skillFactory.createSkillsFromJSON(PATH);
@@ -27,6 +28,19 @@ public class Main {
         List<TaskType> taskTypes = taskTypeFactory.createTaskTypesFromJSON(PATH);
         List<Task> tasks = taskFactory.createTasksFromJSON(PATH);
         List<Volunteer> volunteers = volunteerFactory.createVolunteersFromJSON(PATH);
+
+        double w_dist = 0;
+        double w_gend = 0;
+        double w_type = 0;
+        for(Weight w : weights){
+            if(w.getName().equals("travelDistanceWeight")){
+                w_dist = w.getWeight();
+            }else if(w.getName().equals("genderBalanceWeight")){
+                w_gend = w.getWeight();
+            }else if(w.getName().equals("taskTypeAdequacyWeight")){
+                w_type = w.getWeight();
+            }
+        }
 
         // 1. Presourced deelverzameling
         List<Volunteer> presourcedVolunteers = new ArrayList<>();
@@ -242,6 +256,40 @@ public class Main {
             }
         }
         model.setObjective(objExpr, GRB.MAXIMIZE);
+
+        // Doelfunctie 2
+        GRBLinExpr objExpr2 = new GRBLinExpr();
+        GRBLinExpr expr1 = new GRBLinExpr();
+        GRBLinExpr expr2 = new GRBLinExpr();
+
+        for(int v = 0; v < volunteers.size(); v++){
+            for(int t = 0; t < tasks.size(); t++){
+                Task task = tasks.get(t);
+                Volunteer volunteer = volunteers.get(v);
+
+                Location taskLocation = null;
+                Location volunteerLocation = null;
+                for(Location l : locations){
+                    if(l.getId().equals(task.getLocationId())){
+                        taskLocation = l;
+                    }
+                }
+                for(Location l : locations){
+                    if(l.getId().equals(volunteer.getLocationId())){
+                        volunteerLocation = l;
+                    }
+                }
+
+                if(task.getCanBeDoneByVolunteers().contains(volunteer)){
+                    int distance = haversine.calculateDistance(volunteerLocation.getLon(), volunteerLocation.getLat(), taskLocation.getLon(), taskLocation.getLat());
+             
+                }
+            }
+        }
+
+
+
+
 
         model.optimize();
 
