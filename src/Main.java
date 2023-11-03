@@ -102,12 +102,17 @@ public class Main {
         // Constraint 2
         for(int v = 0; v < volunteers.size(); v++){
             GRBLinExpr constraint = new GRBLinExpr();
-            for(int t = 0 ; t < tasks.size(); t++){
-                if(tasks.get(t).getCanBeDoneByVolunteers().contains(volunteers.get(v)) && presourcedVolunteers.contains(volunteers.get(v))){
+            for(int t = 0; t < tasks.size(); t++){
+                if (tasks.get(t).getCanBeDoneByVolunteers().contains(volunteers.get(v)) && presourcedVolunteers.contains(volunteers.get(v))) {
+                    // Voeg alleen een term toe als de voorwaarden zijn voldaan
                     constraint.addTerm(1.0, x_vt[v][t]);
                 }
             }
-            model.addConstr(constraint, GRB.EQUAL, 1.0, "Constraint2_" + v);
+            if (constraint.size() > 0) {
+                // Voeg de constraint alleen toe als er daadwerkelijk presourced vrijwilligers zijn
+                // anders creëer je altijd infeasibility
+                model.addConstr(constraint, GRB.EQUAL, 1.0, "Constraint2_" + v);
+            }
         }
 
         // Constraint 3
