@@ -88,6 +88,7 @@ public class Main {
         GRBVar y = model.addVar(0, volunteers.size(), 0.0, GRB.INTEGER, "y");
 
 
+        /*
         // Constraint 1
         for(int v = 0; v < volunteers.size(); v++){
             GRBLinExpr constraint = new GRBLinExpr();
@@ -96,8 +97,22 @@ public class Main {
                     constraint.addTerm(1.0, x_vt[v][t]);
                 }
             }
-            model.addConstr(constraint, GRB.LESS_EQUAL, 1.0, "Constraint1_" + v);
+            if(constraint.size() > 0){
+                model.addConstr(constraint, GRB.LESS_EQUAL, 1.0, "Constraint1_" + v);
+            }
         }
+*/
+
+        // Voeg deze constraint toe na de definitie van x_vt-variabelen
+        for (int v = 0; v < volunteers.size(); v++) {
+            GRBLinExpr assignmentConstraint = new GRBLinExpr();
+            for (int t = 0; t < tasks.size(); t++) {
+                assignmentConstraint.addTerm(1.0, x_vt[v][t]);
+            }
+            model.addConstr(assignmentConstraint, GRB.LESS_EQUAL, 1.0, "AssignmentConstraint_" + v);
+        }
+
+
 
         // Constraint 2
         for(int v = 0; v < volunteers.size(); v++){
@@ -128,11 +143,11 @@ public class Main {
 
         // Constraint 4
         for(int t = 0; t < tasks.size(); t++){
-            for(String skillId : tasks.get(t).getSkillRequirementsSkillIds()) {
+            for(SkillRequirement skillRequirement : tasks.get(t).getSkillrequirementsWithHardConstraints()) {
+                String skillId = skillRequirement.getSkillid();
                 GRBLinExpr exprLeft = new GRBLinExpr();
                 GRBLinExpr exprRight = new GRBLinExpr();
                 double fraction = tasks.get(t).getSkillRequirement(skillId).getProportion();
-                SkillRequirement skillRequirement = tasks.get(t).getSkillRequirement(skillId);
                 for(int v = 0; v < volunteers.size(); v++){
                     if(tasks.get(t).getVolunteersThatFullFillMinimumProficiencyForSkillRequirement().containsKey(skillRequirement)){
                         List<Volunteer> volunteersThatFullFillMinProf = tasks.get(t).getVolunteersThatFullFillMinimumProficiencyForSkillRequirement().get(skillRequirement);
@@ -252,9 +267,10 @@ public class Main {
             for(int v = 0; v < volunteers.size(); v++){
                 for(int t = 0; t < tasks.size(); t++){
                     double val = x_vt[v][t].get(GRB.DoubleAttr.X);
-                    if(val == 1){
-                        System.out.println("Volunteer " + v + " got assigned to task " + t);
-                    }
+                    //System.out.println("x_vt[" + v + "][" + t + "] = " + val);
+                    Volunteer volunteer = volunteers.get(v);
+                    Task task = tasks.get(t);
+                    if(val == 1) System.out.println("Vrijwilliger " + volunteer.getId() + " is toegewezen aan task " + task.getId());
                 }
             }
         }
