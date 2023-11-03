@@ -14,6 +14,7 @@ public class Task {
     private List<SkillRequirement> skillrequirementsWithHardConstraints;
     private Map<SkillRequirement, List<Volunteer>> volunteersThatFullFillMinimumProficiencyForSkillRequirement;
     private Map<SkillRequirement, List<Volunteer>> volunteersThatDontFullFillMinimumProficiencyForSkillRequirement;
+
     public Task(String id, String locationId, int demand, int days, String taskTypeId, List<SkillRequirement> skillrequirements){
         this.id = id;
         this.locationId = locationId;
@@ -26,6 +27,23 @@ public class Task {
         this.skillrequirementsWithHardConstraints = new ArrayList<>();
         this.volunteersThatFullFillMinimumProficiencyForSkillRequirement = new HashMap<>();
         this.volunteersThatDontFullFillMinimumProficiencyForSkillRequirement = new HashMap<>();
+    }
+
+    public SkillRequirement getSkillRequirement(String skillId){
+        for(SkillRequirement s: skillrequirements){
+            if(s.getSkillid().equals(skillId)){
+                return s;
+            }
+        }
+        return null;
+    }
+
+    public List<String> getSkillRequirementsSkillIds(){
+        List<String> skillIds = new ArrayList<>();
+        for(SkillRequirement s : skillrequirements){
+            skillIds.add(s.getSkillid());
+        }
+        return skillIds;
     }
 
     public String getId(){

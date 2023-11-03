@@ -35,6 +35,7 @@ public class Main {
                 presourcedVolunteers.add(volunteer);
             }
         }
+        System.out.println("1. Aantal presourced volunteers: " + presourcedVolunteers.size());
 
         // 2. en 3. Male-Female deelverzamelingen
         List<Volunteer> maleVolunteers = new ArrayList<>();
@@ -46,6 +47,8 @@ public class Main {
                 femaleVolunteers.add(volunteer);
             }
         }
+        System.out.println("2. Aantal mannen: " + maleVolunteers.size());
+        System.out.println("3. Aantal vrouwen: " + femaleVolunteers.size());
 
         // 4. Deelverzameing van vrijwilligers die toegewezen kunnen worden aan taak t op basis van voorkeurslocaties, beschikbaarheid en taaktypegeschiktheid
         for (Task t : tasks) {
@@ -68,7 +71,8 @@ public class Main {
         }
 
 
-        GRBEnv env = new GRBEnv();
+        GRBEnv env = new GRBEnv("gurobi.log");
+        env.start();
         GRBModel model = new GRBModel(env);
         model.set(GRB.IntAttr.ModelSense, GRB.MAXIMIZE);
 
@@ -85,6 +89,28 @@ public class Main {
 
 
         // Constraint 1
+        for(int v = 0; v < volunteers.size(); v++){
+            GRBLinExpr constraint = new GRBLinExpr();
+            for(int t = 0 ; t < tasks.size(); t++){
+                if(tasks.get(t).getCanBeDoneByVolunteers().contains(volunteers.get(v)) && !presourcedVolunteers.contains(volunteers.get(v))){
+                    constraint.addTerm(1.0, x_vt[v][t]);
+                }
+            }
+            model.addConstr(constraint, GRB.LESS_EQUAL, 1.0, "Constraint1_" + v);
+        }
+
+        // Constraint 2
+        for(int v = 0; v < volunteers.size(); v++){
+            GRBLinExpr constraint = new GRBLinExpr();
+            for(int t = 0 ; t < tasks.size(); t++){
+                if(tasks.get(t).getCanBeDoneByVolunteers().contains(volunteers.get(v)) && presourcedVolunteers.contains(volunteers.get(v))){
+                    constraint.addTerm(1.0, x_vt[v][t]);
+                }
+            }
+            model.addConstr(constraint, GRB.EQUAL, 1.0, "Constraint2_" + v);
+        }
+
+        // Constraint 3
         for(int t = 0; t < tasks.size(); t++){
             GRBLinExpr constraint = new GRBLinExpr();
             for(int v = 0; v < volunteers.size(); v++){
@@ -92,16 +118,142 @@ public class Main {
                     constraint.addTerm(1.0, x_vt[v][t]);
                 }
             }
-            model.addConstr(constraint, GRB.LESS_EQUAL, 1.0, "Constraint1");
+            model.addConstr(constraint, GRB.LESS_EQUAL, tasks.get(t).getDemand(), "Constraint3_" + t);
+        }
+
+        // Constraint 4
+        for(int t = 0; t < tasks.size(); t++){
+            for(String skillId : tasks.get(t).getSkillRequirementsSkillIds()) {
+                GRBLinExpr exprLeft = new GRBLinExpr();
+                GRBLinExpr exprRight = new GRBLinExpr();
+                double fraction = tasks.get(t).getSkillRequirement(skillId).getProportion();
+                SkillRequirement skillRequirement = tasks.get(t).getSkillRequirement(skillId);
+                for(int v = 0; v < volunteers.size(); v++){
+                    if(tasks.get(t).getVolunteersThatFullFillMinimumProficiencyForSkillRequirement().containsKey(skillRequirement)){
+                        List<Volunteer> volunteersThatFullFillMinProf = tasks.get(t).getVolunteersThatFullFillMinimumProficiencyForSkillRequirement().get(skillRequirement);
+                        if(volunteersThatFullFillMinProf.contains(volunteers.get(v))){
+                            exprLeft.addTerm(1.0, x_vt[v][t]);
+                        }
+                    }
+                }
+                for (int v = 0; v < volunteers.size(); v++) {
+                    if (volunteers.get(v).getCanDoTasks().contains(tasks.get(t))) {
+                        exprRight.addTerm(fraction, x_vt[v][t]);
+                    }
+                }
+                model.addConstr(exprLeft, GRB.GREATER_EQUAL, exprRight, "Constraint4_" + t);
+            }
+        }
+
+        // Constraint 5
+        for(int t = 0; t < tasks.size(); t++){
+            GRBLinExpr exprLeft = new GRBLinExpr();
+            GRBLinExpr exprRight = new GRBLinExpr();
+
+            for(int v = 0; v < volunteers.size(); v++){
+                if(tasks.get(t).getCanBeDoneByVolunteers().contains(volunteers.get(v))){
+                    exprLeft.addTerm(0.45, x_vt[v][t]);
+                }
+            }
+
+            for(int v = 0; v < volunteers.size(); v++){
+                if(tasks.get(t).getCanBeDoneByVolunteers().contains(volunteers.get(v)) && maleVolunteers.contains(volunteers.get(v))){
+                    exprRight.addTerm(1.0, x_vt[v][t]);
+                }
+            }
+            model.addConstr(exprLeft, GRB.LESS_EQUAL, exprRight, "Constraint5_" + t);
+        }
+
+        // Constraint 6
+        for(int t = 0; t < tasks.size(); t++){
+            GRBLinExpr exprLeft = new GRBLinExpr();
+            GRBLinExpr exprRight = new GRBLinExpr();
+
+            for(int v = 0; v < volunteers.size(); v++){
+                if(tasks.get(t).getCanBeDoneByVolunteers().contains(volunteers.get(v))){
+                    exprLeft.addTerm(0.55, x_vt[v][t]);
+                }
+            }
+
+            for(int v = 0; v < volunteers.size(); v++){
+                if(tasks.get(t).getCanBeDoneByVolunteers().contains(volunteers.get(v)) && maleVolunteers.contains(volunteers.get(v))){
+                    exprRight.addTerm(1.0, x_vt[v][t]);
+                }
+            }
+            model.addConstr(exprLeft, GRB.GREATER_EQUAL, exprRight, "Constraint6_" + t);
+        }
+
+        // Constraint 7
+        for (int t = 0; t < tasks.size(); t++) {
+
+            GRBLinExpr exprRight1 = new GRBLinExpr();
+            GRBLinExpr exprRight2 = new GRBLinExpr();
+
+            for (int v = 0; v < volunteers.size(); v++) {
+                if (tasks.get(t).getCanBeDoneByVolunteers().contains(volunteers.get(v)) && femaleVolunteers.contains(volunteers.get(v))) {
+                    exprRight1.addTerm(1.0, x_vt[v][t]);
+                }
+            }
+
+            for (int v = 0; v < volunteers.size(); v++) {
+                if (tasks.get(t).getCanBeDoneByVolunteers().contains(volunteers.get(v)) && maleVolunteers.contains(volunteers.get(v))) {
+                    exprRight2.addTerm(1.0, x_vt[v][t]);
+                }
+            }
+            // Maak een nieuwe variabele voor het verschil
+            GRBVar differenceVar = model.addVar(-GRB.INFINITY, GRB.INFINITY, 0.0, GRB.INTEGER, "differenceVar");
+
+            // Voeg een constraint toe voor het verschil
+            model.addConstr(differenceVar, GRB.GREATER_EQUAL, exprRight1, "DifferenceConstraintRight1_" + t);
+            model.addConstr(differenceVar, GRB.GREATER_EQUAL, exprRight2, "DifferenceConstraintRight2_" + t);
+
+            model.addGenConstrAbs(y, differenceVar, "Constraint7_" + t);
         }
 
 
 
+        // Doelfunctie 1
+        GRBLinExpr objExpr = new GRBLinExpr();
+        for (int v = 0; v < volunteers.size(); v++) {
+            for (int t = 0; t < tasks.size(); t++) {
+                if(volunteers.get(v).getCanDoTasks().contains(tasks.get(t))) {
+                    objExpr.addTerm(1.0, x_vt[v][t]);
+                }
+            }
+        }
+        model.setObjective(objExpr, GRB.MAXIMIZE);
 
+        model.optimize();
 
+        // Controleer of het model infeasible is
+        if (model.get(GRB.IntAttr.Status) == GRB.INFEASIBLE) {
+            // Bereken de IIS (Infeasible Inequalities and Subsystems)
+            model.computeIIS();
 
+            // Haal de lijst van incompatibele beperkingen op
+            List<GRBConstr> iisConstraints = List.of(model.getConstrs());
+
+            // Print de lijst van incompatibele beperkingen
+            System.out.println("Incompatibele beperkingen (IIS):");
+            for (GRBConstr constr : iisConstraints) {
+                System.out.println(constr.get(GRB.StringAttr.ConstrName));
+            }
+
+            // Genereer het IIS-rapportbestand
+            model.write("iisreport.ilp");
+        } else {
+            System.out.println("Model is feasible.");
+
+            for(int v = 0; v < volunteers.size(); v++){
+                for(int t = 0; t < tasks.size(); t++){
+                    double val = x_vt[v][t].get(GRB.DoubleAttr.X);
+                    if(val == 1){
+                        System.out.println("Volunteer " + v + " got assigned to task " + t);
+                    }
+                }
+            }
+        }
     }
-
 
 
 
