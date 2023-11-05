@@ -55,6 +55,7 @@ public class Main {
                 presourcedVolunteers.add(volunteer);
             }
         }
+
         System.out.println("1. Aantal presourced volunteers: " + presourcedVolunteers.size());
 
         // 2. en 3. Male-Female deelverzamelingen
@@ -67,6 +68,7 @@ public class Main {
                 femaleVolunteers.add(volunteer);
             }
         }
+
         System.out.println("2. Aantal mannen: " + maleVolunteers.size());
         System.out.println("3. Aantal vrouwen: " + femaleVolunteers.size());
 
@@ -91,6 +93,8 @@ public class Main {
         }
 
         GRBEnv env = new GRBEnv("gurobi.log");
+        env.set(GRB.IntParam.LogToConsole, 1);
+        env.set(GRB.IntParam.OutputFlag, 1);
         env.start();
         GRBModel model = new GRBModel(env);
         model.set(GRB.IntAttr.ModelSense, GRB.MAXIMIZE);
@@ -114,6 +118,7 @@ public class Main {
             }
             model.addConstr(assignmentConstraint, GRB.LESS_EQUAL, 1.0, "AssignmentConstraint_" + v);
         }
+
 
         // Constraint 2
         for (int v = 0; v < volunteers.size(); v++) {
@@ -141,7 +146,6 @@ public class Main {
             }
             model.addConstr(constraint, GRB.LESS_EQUAL, tasks.get(t).getDemand(), "Constraint3_" + t);
         }
-
 
         // Constraint 4
         for (int t = 0; t < tasks.size(); t++) {
@@ -204,6 +208,7 @@ public class Main {
             }
             model.addConstr(exprLeft, GRB.GREATER_EQUAL, exprRight, "Constraint6_" + t);
         }
+
 
         // Constraint 7
         for (int t = 0; t < tasks.size(); t++) {
@@ -378,6 +383,10 @@ public class Main {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        model.dispose();
+        env.dispose();
+
     }
 
 
