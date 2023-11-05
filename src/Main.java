@@ -239,7 +239,6 @@ public class Main {
                 }
             }
         }
-        model.setObjective(objectiveFunction1, GRB.MAXIMIZE);
 
         // Doelfunctie 2
         GRBLinExpr objectiveFunction2 = new GRBLinExpr();
@@ -300,7 +299,16 @@ public class Main {
         objectiveFunction2.add(expr1);
         objectiveFunction2.add(expr2);
         objectiveFunction2.add(expr3);
-        
+
+
+
+        // Doelfunctie 1 (maximaliseren met prioriteit 1)
+        model.setObjectiveN(objectiveFunction1, 0, 1, 1.0, 0.0, 0.0, "Objective1");
+
+        // Doelfunctie 2 (minimaliseren met prioriteit 2)
+        model.setObjectiveN(objectiveFunction2, 1, 2, -1.0, 0.0, 0.0, "Objective2");
+
+
         model.optimize();
 
         // Controleer of het model infeasible is
