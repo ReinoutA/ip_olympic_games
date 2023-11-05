@@ -4,24 +4,24 @@ public class Weight {
     private String name;
     private double weight;
 
-    public Weight(String name, double weight){
+    public Weight(String name, double weight) {
         this.name = name;
         this.weight = weight;
     }
 
-    public String getName(){
+    public String getName() {
         return name;
     }
 
-    public double getWeight(){
+    public double getWeight() {
         return weight;
     }
 
-    public void setName(String name){
+    public void setName(String name) {
         this.name = name;
     }
 
-    public void setWeight(double weight){
+    public void setWeight(double weight) {
         this.weight = weight;
     }
 

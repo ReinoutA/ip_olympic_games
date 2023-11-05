@@ -13,7 +13,8 @@ public class Volunteer {
     private List<TaskType> taskTypes;
     private List<Task> canDoTasks;
 
-    public Volunteer (String id, boolean isMale, boolean isPresourced, String locationId, List<String> preferredLocationIds, int availableDays, List<Skill> skills, List<TaskType> taskTypes){
+    public Volunteer(String id, boolean isMale, boolean isPresourced, String locationId,
+            List<String> preferredLocationIds, int availableDays, List<Skill> skills, List<TaskType> taskTypes) {
         this.id = id;
         this.isMale = isMale;
         this.isPresourced = isPresourced;
@@ -25,89 +26,89 @@ public class Volunteer {
         this.canDoTasks = new ArrayList<>();
     }
 
-    public void addPreferedLocationId(String preferredLocationId){
+    public void addPreferedLocationId(String preferredLocationId) {
         preferredLocationIds.add(preferredLocationId);
     }
 
-    public void addSkill(Skill skill){
+    public void addSkill(Skill skill) {
         skills.add(skill);
     }
 
-    public void addTaskType(TaskType taskType){
+    public void addTaskType(TaskType taskType) {
         taskTypes.add(taskType);
     }
 
-    public String getId(){
+    public String getId() {
         return id;
     }
 
-    public boolean isMale(){
+    public boolean isMale() {
         return isMale;
     }
 
-    public boolean isPresourced(){
+    public boolean isPresourced() {
         return isPresourced;
     }
 
-    public String getLocationId(){
+    public String getLocationId() {
         return locationId;
     }
 
-    public List<Task> getCanDoTasks(){
+    public List<Task> getCanDoTasks() {
         return canDoTasks;
     }
 
-    public List<String> getPreferredLocationIds(){
+    public List<String> getPreferredLocationIds() {
         return preferredLocationIds;
     }
 
-    public int getAvailableDays(){
+    public int getAvailableDays() {
         return availableDays;
     }
 
-    public List<Skill> getSkills(){
+    public List<Skill> getSkills() {
         return skills;
     }
 
-    public List<TaskType> getTaskTypes(){
+    public List<TaskType> getTaskTypes() {
         return taskTypes;
     }
 
-    public void setId(String id){
+    public void setId(String id) {
         this.id = id;
     }
 
-    public void setIsMale(boolean isMale){
+    public void setIsMale(boolean isMale) {
         this.isMale = isMale;
     }
 
-    public void setIsPresourced(boolean isPresourced){
+    public void setIsPresourced(boolean isPresourced) {
         this.isPresourced = isPresourced;
     }
 
-    public void setLocationId(String locationId){
+    public void setLocationId(String locationId) {
         this.locationId = locationId;
     }
 
-    public void setPreferredLocationIds(List<String> preferredLocationIds){
+    public void setPreferredLocationIds(List<String> preferredLocationIds) {
         this.preferredLocationIds = preferredLocationIds;
     }
 
-    public void setAvailableDays(int availableDays){
+    public void setAvailableDays(int availableDays) {
         this.availableDays = availableDays;
     }
 
-    public void setSkills(List<Skill> skills){
+    public void setSkills(List<Skill> skills) {
         this.skills = skills;
     }
 
-    public void setTaskTypes(List<TaskType> taskTypes){
+    public void setTaskTypes(List<TaskType> taskTypes) {
         this.taskTypes = taskTypes;
     }
 
-    public int getScoreOfTaskType(String taskTypeId){
-        for(TaskType taskType : taskTypes){
-            if(taskTypeId.equals(taskType.getName())){
+    public int getScoreOfTaskType(String taskTypeId) {
+        for (TaskType taskType : taskTypes) {
+            if (taskTypeId.equals(taskType.getName())) {
                 return taskType.getScore();
             }
         }
@@ -116,20 +117,20 @@ public class Volunteer {
         return -1;
     }
 
-    public int getScoreOfSkill(String skillId){
-        for(Skill s : skills){
-            if(s.equals(skillId)){
+    public int getScoreOfSkill(String skillId) {
+        for (Skill s : skills) {
+            if (s.equals(skillId)) {
                 return s.getScore();
             }
         }
         return -1;
     }
 
-    public void addCanDoTasks(List<Task> tasks){
-        for(Task t : tasks){
-            if(preferredLocationIds.contains(t.getLocationId())){
-                if(availableDays >= t.getDays()){
-                    if(this.getScoreOfTaskType(t.getTaskTypeId()) != 0){
+    public void addCanDoTasks(List<Task> tasks) {
+        for (Task t : tasks) {
+            if (preferredLocationIds.contains(t.getLocationId())) {
+                if (availableDays >= t.getDays()) {
+                    if (this.getScoreOfTaskType(t.getTaskTypeId()) != 0) {
                         canDoTasks.add(t);
                     }
                 }

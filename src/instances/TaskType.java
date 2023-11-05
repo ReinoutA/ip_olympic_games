@@ -4,11 +4,11 @@ public class TaskType {
     private String name;
     private int score;
 
-    public TaskType(String name){
+    public TaskType(String name) {
         this.name = name;
     }
 
-    public TaskType(String name, int score){
+    public TaskType(String name, int score) {
         this.name = name;
         this.score = score;
     }
@@ -21,19 +21,19 @@ public class TaskType {
                 '}';
     }
 
-    public void setName(String name){
+    public void setName(String name) {
         this.name = name;
     }
 
-    public String getName(){
+    public String getName() {
         return name;
     }
 
-    public int getScore(){
+    public int getScore() {
         return score;
     }
 
-    public void setScore(int score){
+    public void setScore(int score) {
         this.score = score;
     }
 }

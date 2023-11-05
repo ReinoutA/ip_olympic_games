@@ -4,7 +4,6 @@ import instances.*;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*;
@@ -15,9 +14,9 @@ public class Main {
 
     public static void main(String[] args) throws IOException, GRBException {
 
-        //final String PATH = "IP_Olympic_Games/resources/toy_problem.json";
+        // final String PATH = "IP_Olympic_Games/resources/toy_problem.json";
         final String PATH = "IP_Olympic_Games/resources/i0_200t_5000v.json";
-        //final String PATH = "IP_Olympic_Games/resources/dummy.json";
+        // final String PATH = "IP_Olympic_Games/resources/dummy.json";
         LocationFactory locationFactory = new LocationFactory();
         SkillFactory skillFactory = new SkillFactory();
         WeightFactory weightFactory = new WeightFactory();
@@ -32,8 +31,6 @@ public class Main {
         List<TaskType> taskTypes = taskTypeFactory.createTaskTypesFromJSON(PATH);
         List<Task> tasks = taskFactory.createTasksFromJSON(PATH);
         List<Volunteer> volunteers = volunteerFactory.createVolunteersFromJSON(PATH);
-
-
 
         double w_dist = 0;
         double w_gend = 0;
@@ -72,22 +69,26 @@ public class Main {
         System.out.println("2. Aantal mannen: " + maleVolunteers.size());
         System.out.println("3. Aantal vrouwen: " + femaleVolunteers.size());
 
-        // 4. Deelverzameing van vrijwilligers die toegewezen kunnen worden aan taak t op basis van voorkeurslocaties, beschikbaarheid en taaktypegeschiktheid
+        // 4. Deelverzameing van vrijwilligers die toegewezen kunnen worden aan taak t
+        // op basis van voorkeurslocaties, beschikbaarheid en taaktypegeschiktheid
         for (Task t : tasks) {
             t.createCanBeDoneByVolunteersList(volunteers);
         }
 
-        // 5. Deelverzameling van taken waaraan vrijwilliger v kan toegewezen worden op basis van voorkeurslocaties, beschikbaarheid en taaktypegeschiktheid
+        // 5. Deelverzameling van taken waaraan vrijwilliger v kan toegewezen worden op
+        // basis van voorkeurslocaties, beschikbaarheid en taaktypegeschiktheid
         for (Volunteer v : volunteers) {
             v.addCanDoTasks(tasks);
         }
 
-        // 6. en 7 Deelverzameling van vrijwilligers die wel/niet voldoen aan het minimumbekwaakheidsniveau voor skill s van taak t
+        // 6. en 7 Deelverzameling van vrijwilligers die wel/niet voldoen aan het
+        // minimumbekwaakheidsniveau voor skill s van taak t
         for (Task t : tasks) {
             t.createVolunteersThatFullFillMinimumProficiencyForSkillRequirement(volunteers);
         }
 
-        // 8. en 9. Deelverzameling van vaardigheden waar taak t een harde, zachte eis voor heeft
+        // 8. en 9. Deelverzameling van vaardigheden waar taak t een harde, zachte eis
+        // voor heeft
         for (Task t : tasks) {
             t.createSkillRequirementsSoftHardConstraintsLists();
         }
@@ -119,18 +120,19 @@ public class Main {
             model.addConstr(assignmentConstraint, GRB.LESS_EQUAL, 1.0, "AssignmentConstraint_" + v);
         }
 
-
         // Constraint 2
         for (int v = 0; v < volunteers.size(); v++) {
             GRBLinExpr constraint = new GRBLinExpr();
             for (int t = 0; t < tasks.size(); t++) {
-                if (tasks.get(t).getCanBeDoneByVolunteers().contains(volunteers.get(v)) && presourcedVolunteers.contains(volunteers.get(v))) {
+                if (tasks.get(t).getCanBeDoneByVolunteers().contains(volunteers.get(v))
+                        && presourcedVolunteers.contains(volunteers.get(v))) {
                     // Voeg alleen een term toe als de voorwaarden zijn voldaan
                     constraint.addTerm(1.0, x_vt[v][t]);
                 }
             }
             if (constraint.size() > 0) {
-                // Voeg de constraint alleen toe als er daadwerkelijk presourced vrijwilligers zijn
+                // Voeg de constraint alleen toe als er daadwerkelijk presourced vrijwilligers
+                // zijn
                 // anders creëer je altijd infeasibility
                 model.addConstr(constraint, GRB.EQUAL, 1.0, "Constraint2_" + v);
             }
@@ -140,9 +142,9 @@ public class Main {
         for (int t = 0; t < tasks.size(); t++) {
             GRBLinExpr constraint = new GRBLinExpr();
             for (int v = 0; v < volunteers.size(); v++) {
-                //if (tasks.get(t).getCanBeDoneByVolunteers().contains(volunteers.get(v))) {
-                    constraint.addTerm(1.0, x_vt[v][t]);
-                //}
+                // if (tasks.get(t).getCanBeDoneByVolunteers().contains(volunteers.get(v))) {
+                constraint.addTerm(1.0, x_vt[v][t]);
+                // }
             }
             model.addConstr(constraint, GRB.LESS_EQUAL, tasks.get(t).getDemand(), "Constraint3_" + t);
         }
@@ -155,8 +157,10 @@ public class Main {
                 GRBLinExpr exprRight = new GRBLinExpr();
                 double fraction = tasks.get(t).getSkillRequirement(skillId).getProportion();
                 for (int v = 0; v < volunteers.size(); v++) {
-                    if (tasks.get(t).getVolunteersThatFullFillMinimumProficiencyForSkillRequirement().containsKey(skillRequirement)) {
-                        List<Volunteer> volunteersThatFullFillMinProf = tasks.get(t).getVolunteersThatFullFillMinimumProficiencyForSkillRequirement().get(skillRequirement);
+                    if (tasks.get(t).getVolunteersThatFullFillMinimumProficiencyForSkillRequirement()
+                            .containsKey(skillRequirement)) {
+                        List<Volunteer> volunteersThatFullFillMinProf = tasks.get(t)
+                                .getVolunteersThatFullFillMinimumProficiencyForSkillRequirement().get(skillRequirement);
                         if (volunteersThatFullFillMinProf.contains(volunteers.get(v))) {
                             exprLeft.addTerm(1.0, x_vt[v][t]);
                         }
@@ -183,7 +187,8 @@ public class Main {
             }
 
             for (int v = 0; v < volunteers.size(); v++) {
-                if (tasks.get(t).getCanBeDoneByVolunteers().contains(volunteers.get(v)) && maleVolunteers.contains(volunteers.get(v))) {
+                if (tasks.get(t).getCanBeDoneByVolunteers().contains(volunteers.get(v))
+                        && maleVolunteers.contains(volunteers.get(v))) {
                     exprRight.addTerm(1.0, x_vt[v][t]);
                 }
             }
@@ -202,13 +207,13 @@ public class Main {
             }
 
             for (int v = 0; v < volunteers.size(); v++) {
-                if (tasks.get(t).getCanBeDoneByVolunteers().contains(volunteers.get(v)) && maleVolunteers.contains(volunteers.get(v))) {
+                if (tasks.get(t).getCanBeDoneByVolunteers().contains(volunteers.get(v))
+                        && maleVolunteers.contains(volunteers.get(v))) {
                     exprRight.addTerm(1.0, x_vt[v][t]);
                 }
             }
             model.addConstr(exprLeft, GRB.GREATER_EQUAL, exprRight, "Constraint6_" + t);
         }
-
 
         // Constraint 7
         for (int t = 0; t < tasks.size(); t++) {
@@ -217,13 +222,15 @@ public class Main {
             GRBLinExpr exprRight2 = new GRBLinExpr();
 
             for (int v = 0; v < volunteers.size(); v++) {
-                if (tasks.get(t).getCanBeDoneByVolunteers().contains(volunteers.get(v)) && femaleVolunteers.contains(volunteers.get(v))) {
+                if (tasks.get(t).getCanBeDoneByVolunteers().contains(volunteers.get(v))
+                        && femaleVolunteers.contains(volunteers.get(v))) {
                     exprRight1.addTerm(1.0, x_vt[v][t]);
                 }
             }
 
             for (int v = 0; v < volunteers.size(); v++) {
-                if (tasks.get(t).getCanBeDoneByVolunteers().contains(volunteers.get(v)) && maleVolunteers.contains(volunteers.get(v))) {
+                if (tasks.get(t).getCanBeDoneByVolunteers().contains(volunteers.get(v))
+                        && maleVolunteers.contains(volunteers.get(v))) {
                     exprRight2.addTerm(1.0, x_vt[v][t]);
                 }
             }
@@ -239,18 +246,17 @@ public class Main {
 
         // Constraint EXTRA
 
-        // Constraint om ervoor te zorgen dat x_vt 0 is als een vrijwilliger niet beschikbaar is
+        // Constraint om ervoor te zorgen dat x_vt 0 is als een vrijwilliger niet
+        // beschikbaar, taaktypegeschiktheid 0 heeft, niet die locatie als voorkeurslocatie heeft..
         for (int v = 0; v < volunteers.size(); v++) {
             for (int t = 0; t < tasks.size(); t++) {
                 Task task = tasks.get(t);
                 Volunteer volunteer = volunteers.get(v);
-                if(!task.getCanBeDoneByVolunteers().contains(volunteer)){
+                if (!task.getCanBeDoneByVolunteers().contains(volunteer)) {
                     model.addConstr(x_vt[v][t], GRB.EQUAL, 0, "CONSTR_EXTR");
                 }
             }
         }
-
-
 
         // Doelfunctie 1
         GRBLinExpr objectiveFunction1 = new GRBLinExpr();
@@ -288,7 +294,8 @@ public class Main {
                 }
 
                 if (task.getCanBeDoneByVolunteers().contains(volunteer)) {
-                    int f_vt = haversine.calculateDistance(volunteerLocation.getLon(), volunteerLocation.getLat(), taskLocation.getLon(), taskLocation.getLat());
+                    int f_vt = haversine.calculateDistance(volunteerLocation.getLon(), volunteerLocation.getLat(),
+                            taskLocation.getLon(), taskLocation.getLat());
                     String taskTypeId = task.getTaskTypeId();
                     int q_vnt = volunteer.getScoreOfTaskType(taskTypeId);
                     expr1.addTerm(w_dist * f_vt, x_vt[v][t]);
@@ -305,7 +312,8 @@ public class Main {
                 if (task.getCanBeDoneByVolunteers().contains(volunteer)) {
 
                     for (SkillRequirement skillRequirement : task.getSkillrequirementsWithSoftConstraints()) {
-                        Map<SkillRequirement, List<Volunteer>> m = task.getVolunteersThatDontFullFillMinimumProficiencyForSkillRequirement();
+                        Map<SkillRequirement, List<Volunteer>> m = task
+                                .getVolunteersThatDontFullFillMinimumProficiencyForSkillRequirement();
                         List<Volunteer> volunteerList = m.get(skillRequirement);
                         if (volunteerList.contains(volunteer)) {
                             expr2.addTerm(skillRequirement.getWeight(), x_vt[v][t]);
@@ -354,11 +362,12 @@ public class Main {
             for (int v = 0; v < volunteers.size(); v++) {
                 for (int t = 0; t < tasks.size(); t++) {
                     double val = x_vt[v][t].get(GRB.DoubleAttr.X);
-                    //System.out.println("x_vt[" + v + "][" + t + "] = " + val);
+                    // System.out.println("x_vt[" + v + "][" + t + "] = " + val);
                     Volunteer volunteer = volunteers.get(v);
                     Task task = tasks.get(t);
                     if (val == 1)
-                        System.out.println("Vrijwilliger " + volunteer.getId() + " is toegewezen aan task " + task.getId());
+                        System.out.println(
+                                "Vrijwilliger " + volunteer.getId() + " is toegewezen aan task " + task.getId());
                 }
             }
         }
@@ -403,10 +412,4 @@ public class Main {
 
     }
 
-
-
-
-    }
-
-
-
+}

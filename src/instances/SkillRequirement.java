@@ -7,7 +7,7 @@ public class SkillRequirement {
     private double proportion;
     private double weight;
 
-    public SkillRequirement(String skillId, int minProficiency, boolean isHard, double proportion, double weight ){
+    public SkillRequirement(String skillId, int minProficiency, boolean isHard, double proportion, double weight) {
         this.skillId = skillId;
         this.minProficiency = minProficiency;
         this.isHard = isHard;
@@ -26,43 +26,43 @@ public class SkillRequirement {
                 '}';
     }
 
-    public String getSkillid(){
+    public String getSkillid() {
         return skillId;
     }
 
-    public int getMinProficiency(){
+    public int getMinProficiency() {
         return minProficiency;
     }
 
-    public boolean isHard(){
+    public boolean isHard() {
         return isHard;
     }
 
-    public double getProportion(){
+    public double getProportion() {
         return proportion;
     }
 
-    public double getWeight(){
+    public double getWeight() {
         return weight;
     }
 
-    public void setSkillId(String skillid){
+    public void setSkillId(String skillid) {
         this.skillId = skillid;
     }
 
-    public void setMinProficiency(int minProficiency){
+    public void setMinProficiency(int minProficiency) {
         this.minProficiency = minProficiency;
     }
 
-    public void setIsHard(){
+    public void setIsHard() {
         this.isHard = isHard;
     }
 
-    public void setProportion(){
+    public void setProportion() {
         this.proportion = proportion;
     }
 
-    public void setWeight(double weight){
+    public void setWeight(double weight) {
         this.weight = weight;
     }
 

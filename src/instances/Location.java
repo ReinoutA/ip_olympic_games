@@ -11,26 +11,25 @@ public class Location {
         this.lon = lon;
     }
 
-    public String getId(){
+    public String getId() {
         return id;
     }
 
-    public double getLat(){
+    public double getLat() {
         return lat;
     }
 
-    public double getLon(){
+    public double getLon() {
         return lon;
     }
 
-    public void setId(String id){
+    public void setId(String id) {
         this.id = id;
     }
 
-    public void setLat(double lat){
+    public void setLat(double lat) {
         this.lat = lat;
     }
-
 
     @Override
     public String toString() {
@@ -41,7 +40,4 @@ public class Location {
                 '}';
     }
 
-
 }
-
-

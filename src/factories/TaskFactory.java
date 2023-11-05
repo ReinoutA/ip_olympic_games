@@ -40,7 +40,8 @@ public class TaskFactory {
                 double proportion = skillData.getDouble("proportion");
                 double weight = skillData.getDouble("weight");
 
-                SkillRequirement skillRequirement = new SkillRequirement(skillId, minProficiency, isHard, proportion, weight);
+                SkillRequirement skillRequirement = new SkillRequirement(skillId, minProficiency, isHard, proportion,
+                        weight);
                 skillRequirements.add(skillRequirement);
             }
 

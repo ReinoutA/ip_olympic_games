@@ -15,7 +15,8 @@ public class Task {
     private Map<SkillRequirement, List<Volunteer>> volunteersThatFullFillMinimumProficiencyForSkillRequirement;
     private Map<SkillRequirement, List<Volunteer>> volunteersThatDontFullFillMinimumProficiencyForSkillRequirement;
 
-    public Task(String id, String locationId, int demand, int days, String taskTypeId, List<SkillRequirement> skillrequirements){
+    public Task(String id, String locationId, int demand, int days, String taskTypeId,
+            List<SkillRequirement> skillrequirements) {
         this.id = id;
         this.locationId = locationId;
         this.demand = demand;
@@ -29,87 +30,90 @@ public class Task {
         this.volunteersThatDontFullFillMinimumProficiencyForSkillRequirement = new HashMap<>();
     }
 
-    public SkillRequirement getSkillRequirement(String skillId){
-        for(SkillRequirement s: skillrequirements){
-            if(s.getSkillid().equals(skillId)){
+    public SkillRequirement getSkillRequirement(String skillId) {
+        for (SkillRequirement s : skillrequirements) {
+            if (s.getSkillid().equals(skillId)) {
                 return s;
             }
         }
         return null;
     }
 
-    public List<String> getSkillRequirementsSkillIds(){
+    public List<String> getSkillRequirementsSkillIds() {
         List<String> skillIds = new ArrayList<>();
-        for(SkillRequirement s : skillrequirements){
+        for (SkillRequirement s : skillrequirements) {
             skillIds.add(s.getSkillid());
         }
         return skillIds;
     }
 
-    public String getId(){
+    public String getId() {
         return id;
     }
 
-    public String getLocationId(){
+    public String getLocationId() {
         return locationId;
     }
 
-    public int getDemand(){
+    public int getDemand() {
         return demand;
     }
 
-    public int getDays(){return days;}
-    public String getTaskTypeId(){
+    public int getDays() {
+        return days;
+    }
+
+    public String getTaskTypeId() {
         return taskTypeId;
     }
 
-    public List<SkillRequirement> getSkillRequirements(){
+    public List<SkillRequirement> getSkillRequirements() {
         return skillrequirements;
     }
 
-    public void setId(String id){
+    public void setId(String id) {
         this.id = id;
     }
 
-    public void setLocationId(String locationId){
+    public void setLocationId(String locationId) {
         this.locationId = locationId;
     }
 
-    public void setDemand(int demand){
+    public void setDemand(int demand) {
         this.demand = demand;
     }
 
-    public void setTaskTypeId(String taskTypeId){
+    public void setTaskTypeId(String taskTypeId) {
         this.taskTypeId = taskTypeId;
     }
 
-    public void setSkillrequirements(List<SkillRequirement> skillrequirements){
+    public void setSkillrequirements(List<SkillRequirement> skillrequirements) {
         this.skillrequirements = skillrequirements;
     }
 
-    public List<SkillRequirement> getSkillrequirementsWithSoftConstraints(){
+    public List<SkillRequirement> getSkillrequirementsWithSoftConstraints() {
         return skillrequirementsWithSoftConstraints;
     }
 
-    public List<SkillRequirement> getSkillrequirementsWithHardConstraints(){
+    public List<SkillRequirement> getSkillrequirementsWithHardConstraints() {
         return skillrequirementsWithHardConstraints;
     }
 
-    public List<Volunteer> getCanBeDoneByVolunteers(){
+    public List<Volunteer> getCanBeDoneByVolunteers() {
         return canBeDoneByVolunteers;
     }
 
-    public Map<SkillRequirement, List<Volunteer>> getVolunteersThatFullFillMinimumProficiencyForSkillRequirement(){
+    public Map<SkillRequirement, List<Volunteer>> getVolunteersThatFullFillMinimumProficiencyForSkillRequirement() {
         return volunteersThatFullFillMinimumProficiencyForSkillRequirement;
     }
 
-    public void createCanBeDoneByVolunteersList(List<Volunteer> volunteers){
-        for(Volunteer v : volunteers){
+    public void createCanBeDoneByVolunteersList(List<Volunteer> volunteers) {
+        for (Volunteer v : volunteers) {
             // locatie OKE
-            if(v.getPreferredLocationIds().contains(locationId)){
+            if (v.getPreferredLocationIds().contains(locationId)) {
                 // beschikbaarheid OKE
-                if(v.getAvailableDays() >= days){
-                    if(v.getScoreOfTaskType(taskTypeId) != 0){
+                if (v.getAvailableDays() >= days) {
+                    if (v.getScoreOfTaskType(taskTypeId) != 0) {
                         canBeDoneByVolunteers.add(v);
                     }
                 }
@@ -117,33 +121,35 @@ public class Task {
         }
     }
 
-    public void createSkillRequirementsSoftHardConstraintsLists(){
-        for(SkillRequirement s : skillrequirements){
-            if(s.isHard()){
+    public void createSkillRequirementsSoftHardConstraintsLists() {
+        for (SkillRequirement s : skillrequirements) {
+            if (s.isHard()) {
                 skillrequirementsWithHardConstraints.add(s);
-            }else{
+            } else {
                 skillrequirementsWithSoftConstraints.add(s);
             }
         }
     }
 
-    public void createVolunteersThatFullFillMinimumProficiencyForSkillRequirement(List<Volunteer> volunteers){
-        for(SkillRequirement skillRequirement : skillrequirements) {
+    public void createVolunteersThatFullFillMinimumProficiencyForSkillRequirement(List<Volunteer> volunteers) {
+        for (SkillRequirement skillRequirement : skillrequirements) {
             List<Volunteer> volunteersThatMeetRequirement = new ArrayList<>();
             List<Volunteer> volunteersThatDontMeetRequirement = new ArrayList<>();
             for (Volunteer v : volunteers) {
-                for(Skill skill : v.getSkills()){
-                    if(skill.getSkillId().equals(skillRequirement.getSkillid())){
-                        if(skill.getScore() >= skillRequirement.getMinProficiency()) {
+                for (Skill skill : v.getSkills()) {
+                    if (skill.getSkillId().equals(skillRequirement.getSkillid())) {
+                        if (skill.getScore() >= skillRequirement.getMinProficiency()) {
                             volunteersThatMeetRequirement.add(v);
-                        }else{
+                        } else {
                             volunteersThatDontMeetRequirement.add(v);
                         }
                     }
                 }
             }
-            volunteersThatFullFillMinimumProficiencyForSkillRequirement.put(skillRequirement, volunteersThatMeetRequirement);
-            volunteersThatDontFullFillMinimumProficiencyForSkillRequirement.put(skillRequirement, volunteersThatDontMeetRequirement);
+            volunteersThatFullFillMinimumProficiencyForSkillRequirement.put(skillRequirement,
+                    volunteersThatMeetRequirement);
+            volunteersThatDontFullFillMinimumProficiencyForSkillRequirement.put(skillRequirement,
+                    volunteersThatDontMeetRequirement);
         }
     }
 
@@ -160,12 +166,11 @@ public class Task {
                 '}';
     }
 
-    public void addSkillRequirement(SkillRequirement skillRequirement){
+    public void addSkillRequirement(SkillRequirement skillRequirement) {
         skillrequirements.add(skillRequirement);
     }
 
-    public Map<SkillRequirement, List<Volunteer>> getVolunteersThatDontFullFillMinimumProficiencyForSkillRequirement(){
+    public Map<SkillRequirement, List<Volunteer>> getVolunteersThatDontFullFillMinimumProficiencyForSkillRequirement() {
         return volunteersThatDontFullFillMinimumProficiencyForSkillRequirement;
     }
 }
-
