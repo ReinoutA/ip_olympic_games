@@ -16,8 +16,8 @@ public class Main {
     public static void main(String[] args) throws IOException, GRBException {
 
         //final String PATH = "IP_Olympic_Games/resources/toy_problem.json";
-        //final String PATH = "IP_Olympic_Games/resources/i0_200t_5000v.json";
-        final String PATH = "IP_Olympic_Games/resources/dummy.json";
+        final String PATH = "IP_Olympic_Games/resources/i0_200t_5000v.json";
+        //final String PATH = "IP_Olympic_Games/resources/dummy.json";
         LocationFactory locationFactory = new LocationFactory();
         SkillFactory skillFactory = new SkillFactory();
         WeightFactory weightFactory = new WeightFactory();
@@ -236,6 +236,20 @@ public class Main {
 
             model.addGenConstrAbs(y, differenceVar, "Constraint7_" + t);
         }
+
+        // Constraint EXTRA
+
+        // Constraint om ervoor te zorgen dat x_vt 0 is als een vrijwilliger niet beschikbaar is
+        for (int v = 0; v < volunteers.size(); v++) {
+            for (int t = 0; t < tasks.size(); t++) {
+                Task task = tasks.get(t);
+                Volunteer volunteer = volunteers.get(v);
+                if(!task.getCanBeDoneByVolunteers().contains(volunteer)){
+                    model.addConstr(x_vt[v][t], GRB.EQUAL, 0, "CONSTR_EXTR");
+                }
+            }
+        }
+
 
 
         // Doelfunctie 1
