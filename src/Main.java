@@ -102,22 +102,8 @@ public class Main {
         GRBVar y = model.addVar(0, volunteers.size(), 0.0, GRB.INTEGER, "y");
 
 
-        /*
-        // Constraint 1
-        for(int v = 0; v < volunteers.size(); v++){
-            GRBLinExpr constraint = new GRBLinExpr();
-            for(int t = 0 ; t < tasks.size(); t++){
-                if(tasks.get(t).getCanBeDoneByVolunteers().contains(volunteers.get(v)) && !presourcedVolunteers.contains(volunteers.get(v))){
-                    constraint.addTerm(1.0, x_vt[v][t]);
-                }
-            }
-            if(constraint.size() > 0){
-                model.addConstr(constraint, GRB.LESS_EQUAL, 1.0, "Constraint1_" + v);
-            }
-        }
-*/
 
-        // Voeg deze constraint toe na de definitie van x_vt-variabelen
+        // Constraint 1
         for (int v = 0; v < volunteers.size(); v++) {
             GRBLinExpr assignmentConstraint = new GRBLinExpr();
             for (int t = 0; t < tasks.size(); t++) {
@@ -125,8 +111,6 @@ public class Main {
             }
             model.addConstr(assignmentConstraint, GRB.LESS_EQUAL, 1.0, "AssignmentConstraint_" + v);
         }
-
-
 
         // Constraint 2
         for(int v = 0; v < volunteers.size(); v++){
@@ -247,21 +231,23 @@ public class Main {
 
 
         // Doelfunctie 1
-        GRBLinExpr objExpr = new GRBLinExpr();
+        GRBLinExpr objectiveFunction1 = new GRBLinExpr();
         for (int v = 0; v < volunteers.size(); v++) {
             for (int t = 0; t < tasks.size(); t++) {
                 if(volunteers.get(v).getCanDoTasks().contains(tasks.get(t))) {
-                    objExpr.addTerm(1.0, x_vt[v][t]);
+                    objectiveFunction1.addTerm(1.0, x_vt[v][t]);
                 }
             }
         }
-        model.setObjective(objExpr, GRB.MAXIMIZE);
+        model.setObjective(objectiveFunction1, GRB.MAXIMIZE);
 
         // Doelfunctie 2
-        GRBLinExpr objExpr2 = new GRBLinExpr();
+        GRBLinExpr objectiveFunction2 = new GRBLinExpr();
         GRBLinExpr expr1 = new GRBLinExpr();
         GRBLinExpr expr2 = new GRBLinExpr();
+        GRBLinExpr expr3 = new GRBLinExpr();
 
+        // Expr 1
         for(int v = 0; v < volunteers.size(); v++){
             for(int t = 0; t < tasks.size(); t++){
                 Task task = tasks.get(t);
@@ -281,16 +267,40 @@ public class Main {
                 }
 
                 if(task.getCanBeDoneByVolunteers().contains(volunteer)){
-                    int distance = haversine.calculateDistance(volunteerLocation.getLon(), volunteerLocation.getLat(), taskLocation.getLon(), taskLocation.getLat());
-             
+                    int f_vt = haversine.calculateDistance(volunteerLocation.getLon(), volunteerLocation.getLat(), taskLocation.getLon(), taskLocation.getLat());
+                    String taskTypeId = task.getTaskTypeId();
+                    int q_vnt = volunteer.getScoreOfTaskType(taskTypeId);
+                    expr1.addTerm(w_dist * f_vt, x_vt[v][t]);
+                    expr1.addTerm(-w_type * q_vnt, x_vt[v][t]);
                 }
             }
         }
 
+        // Expr 2
+        for(int t = 0; t < tasks.size(); t++){
+            for(int v = 0; v < volunteers.size(); v++){
+                Task task = tasks.get(t);
+                Volunteer volunteer = volunteers.get(v);
+                if(task.getCanBeDoneByVolunteers().contains(volunteer)){
 
+                    for(SkillRequirement skillRequirement : task.getSkillrequirementsWithSoftConstraints()){
+                       Map<SkillRequirement, List<Volunteer>> m = task.getVolunteersThatDontFullFillMinimumProficiencyForSkillRequirement();
+                       List<Volunteer> volunteerList = m.get(skillRequirement);
+                       if(volunteerList.contains(volunteer)){
+                           expr2.addTerm(skillRequirement.getWeight(), x_vt[v][t]);
+                       }
+                    }
+                }
+            }
+        }
 
+        // Expr 3
+        expr3.addTerm(w_gend, y);
 
-
+        objectiveFunction2.add(expr1);
+        objectiveFunction2.add(expr2);
+        objectiveFunction2.add(expr3);
+        
         model.optimize();
 
         // Controleer of het model infeasible is

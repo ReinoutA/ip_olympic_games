@@ -163,5 +163,9 @@ public class Task {
     public void addSkillRequirement(SkillRequirement skillRequirement){
         skillrequirements.add(skillRequirement);
     }
+
+    public Map<SkillRequirement, List<Volunteer>> getVolunteersThatDontFullFillMinimumProficiencyForSkillRequirement(){
+        return volunteersThatDontFullFillMinimumProficiencyForSkillRequirement;
+    }
 }
 
