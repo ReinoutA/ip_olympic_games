@@ -15,8 +15,9 @@ public class Main {
 
     public static void main(String[] args) throws IOException, GRBException {
 
-        final String PATH = "IP_Olympic_Games/resources/toy_problem.json";
-
+        //final String PATH = "IP_Olympic_Games/resources/toy_problem.json";
+        //final String PATH = "IP_Olympic_Games/resources/i0_200t_5000v.json";
+        final String PATH = "IP_Olympic_Games/resources/dummy.json";
         LocationFactory locationFactory = new LocationFactory();
         SkillFactory skillFactory = new SkillFactory();
         WeightFactory weightFactory = new WeightFactory();
@@ -31,6 +32,8 @@ public class Main {
         List<TaskType> taskTypes = taskTypeFactory.createTaskTypesFromJSON(PATH);
         List<Task> tasks = taskFactory.createTasksFromJSON(PATH);
         List<Volunteer> volunteers = volunteerFactory.createVolunteersFromJSON(PATH);
+
+
 
         double w_dist = 0;
         double w_gend = 0;
@@ -87,7 +90,6 @@ public class Main {
             t.createSkillRequirementsSoftHardConstraintsLists();
         }
 
-
         GRBEnv env = new GRBEnv("gurobi.log");
         env.start();
         GRBModel model = new GRBModel(env);
@@ -103,7 +105,6 @@ public class Main {
 
         // Definieer de beslissingsvariabele y
         GRBVar y = model.addVar(0, volunteers.size(), 0.0, GRB.INTEGER, "y");
-
 
         // Constraint 1
         for (int v = 0; v < volunteers.size(); v++) {
@@ -134,12 +135,13 @@ public class Main {
         for (int t = 0; t < tasks.size(); t++) {
             GRBLinExpr constraint = new GRBLinExpr();
             for (int v = 0; v < volunteers.size(); v++) {
-                if (tasks.get(t).getCanBeDoneByVolunteers().contains(volunteers.get(v))) {
+                //if (tasks.get(t).getCanBeDoneByVolunteers().contains(volunteers.get(v))) {
                     constraint.addTerm(1.0, x_vt[v][t]);
-                }
+                //}
             }
             model.addConstr(constraint, GRB.LESS_EQUAL, tasks.get(t).getDemand(), "Constraint3_" + t);
         }
+
 
         // Constraint 4
         for (int t = 0; t < tasks.size(); t++) {
@@ -307,9 +309,10 @@ public class Main {
         // Doelfunctie 2 (minimaliseren met prioriteit 2)
         model.setObjectiveN(objectiveFunction2, 1, 2, -1.0, 0.0, 0.0, "Objective2");
 
-
+        model.update();
         model.optimize();
 
+        System.out.println("Aantal Constraints: " + List.of(model.getConstrs()).size());
         // Controleer of het model infeasible is
         if (model.get(GRB.IntAttr.Status) == GRB.INFEASIBLE) {
             // Bereken de IIS (Infeasible Inequalities and Subsystems)

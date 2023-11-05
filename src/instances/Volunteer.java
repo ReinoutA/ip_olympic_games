@@ -112,6 +112,7 @@ public class Volunteer {
             }
         }
         // TODO IS DIT 0 OF -1?
+        System.out.println("ERROR: getScoreOfTaskType Volunteer Class");
         return -1;
     }
 
