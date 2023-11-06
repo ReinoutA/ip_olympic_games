@@ -14,8 +14,8 @@ public class Main {
 
     public static void main(String[] args) throws IOException, GRBException {
 
-        // final String PATH = "IP_Olympic_Games/resources/toy_problem.json";
-        final String PATH = "IP_Olympic_Games/resources/i0_200t_5000v.json";
+        final String PATH = "IP_Olympic_Games/resources/toy_problem2.json";
+        //final String PATH = "IP_Olympic_Games/resources/i0_200t_5000v.json";
         // final String PATH = "IP_Olympic_Games/resources/dummy.json";
         LocationFactory locationFactory = new LocationFactory();
         SkillFactory skillFactory = new SkillFactory();
@@ -44,6 +44,7 @@ public class Main {
                 w_type = w.getWeight();
             }
         }
+
 
         // 1. Presourced deelverzameling
         List<Volunteer> presourcedVolunteers = new ArrayList<>();
@@ -111,6 +112,7 @@ public class Main {
         // Definieer de beslissingsvariabele y
         GRBVar y = model.addVar(0, volunteers.size(), 0.0, GRB.INTEGER, "y");
 
+
         // Constraint 1
         for (int v = 0; v < volunteers.size(); v++) {
             GRBLinExpr assignmentConstraint = new GRBLinExpr();
@@ -119,6 +121,7 @@ public class Main {
             }
             model.addConstr(assignmentConstraint, GRB.LESS_EQUAL, 1.0, "AssignmentConstraint_" + v);
         }
+
 
         // Constraint 2
         for (int v = 0; v < volunteers.size(); v++) {
@@ -138,16 +141,18 @@ public class Main {
             }
         }
 
+
         // Constraint 3
         for (int t = 0; t < tasks.size(); t++) {
             GRBLinExpr constraint = new GRBLinExpr();
             for (int v = 0; v < volunteers.size(); v++) {
-                // if (tasks.get(t).getCanBeDoneByVolunteers().contains(volunteers.get(v))) {
+                //if (tasks.get(t).getCanBeDoneByVolunteers().contains(volunteers.get(v))) {
                 constraint.addTerm(1.0, x_vt[v][t]);
-                // }
+                //}
             }
             model.addConstr(constraint, GRB.LESS_EQUAL, tasks.get(t).getDemand(), "Constraint3_" + t);
         }
+
 
         // Constraint 4
         for (int t = 0; t < tasks.size(); t++) {
@@ -157,10 +162,8 @@ public class Main {
                 GRBLinExpr exprRight = new GRBLinExpr();
                 double fraction = tasks.get(t).getSkillRequirement(skillId).getProportion();
                 for (int v = 0; v < volunteers.size(); v++) {
-                    if (tasks.get(t).getVolunteersThatFullFillMinimumProficiencyForSkillRequirement()
-                            .containsKey(skillRequirement)) {
-                        List<Volunteer> volunteersThatFullFillMinProf = tasks.get(t)
-                                .getVolunteersThatFullFillMinimumProficiencyForSkillRequirement().get(skillRequirement);
+                    if (tasks.get(t).getVolunteersThatFullFillMinimumProficiencyForSkillRequirement().containsKey(skillRequirement)) {
+                        List<Volunteer> volunteersThatFullFillMinProf = tasks.get(t).getVolunteersThatFullFillMinimumProficiencyForSkillRequirement().get(skillRequirement);
                         if (volunteersThatFullFillMinProf.contains(volunteers.get(v))) {
                             exprLeft.addTerm(1.0, x_vt[v][t]);
                         }
@@ -195,6 +198,7 @@ public class Main {
             model.addConstr(exprLeft, GRB.LESS_EQUAL, exprRight, "Constraint5_" + t);
         }
 
+
         // Constraint 6
         for (int t = 0; t < tasks.size(); t++) {
             GRBLinExpr exprLeft = new GRBLinExpr();
@@ -214,6 +218,7 @@ public class Main {
             }
             model.addConstr(exprLeft, GRB.GREATER_EQUAL, exprRight, "Constraint6_" + t);
         }
+
 
         // Constraint 7
         for (int t = 0; t < tasks.size(); t++) {
@@ -248,6 +253,7 @@ public class Main {
 
         // Constraint om ervoor te zorgen dat x_vt 0 is als een vrijwilliger niet
         // beschikbaar, taaktypegeschiktheid 0 heeft, niet die locatie als voorkeurslocatie heeft..
+
         for (int v = 0; v < volunteers.size(); v++) {
             for (int t = 0; t < tasks.size(); t++) {
                 Task task = tasks.get(t);
@@ -274,6 +280,7 @@ public class Main {
         GRBLinExpr expr2 = new GRBLinExpr();
         GRBLinExpr expr3 = new GRBLinExpr();
 
+
         // Expr 1
         for (int v = 0; v < volunteers.size(); v++) {
             for (int t = 0; t < tasks.size(); t++) {
@@ -293,35 +300,37 @@ public class Main {
                     }
                 }
 
-                if (task.getCanBeDoneByVolunteers().contains(volunteer)) {
-                    int f_vt = haversine.calculateDistance(volunteerLocation.getLon(), volunteerLocation.getLat(),
-                            taskLocation.getLon(), taskLocation.getLat());
+               if (task.getCanBeDoneByVolunteers().contains(volunteer)) {
+                    int f_vt = haversine.calculateDistance(volunteerLocation.getLon(), volunteerLocation.getLat(), taskLocation.getLon(), taskLocation.getLat());
                     String taskTypeId = task.getTaskTypeId();
                     int q_vnt = volunteer.getScoreOfTaskType(taskTypeId);
                     expr1.addTerm(w_dist * f_vt, x_vt[v][t]);
                     expr1.addTerm(-w_type * q_vnt, x_vt[v][t]);
-                }
+               }
             }
         }
 
         // Expr 2
+
         for (int t = 0; t < tasks.size(); t++) {
             for (int v = 0; v < volunteers.size(); v++) {
                 Task task = tasks.get(t);
                 Volunteer volunteer = volunteers.get(v);
                 if (task.getCanBeDoneByVolunteers().contains(volunteer)) {
-
                     for (SkillRequirement skillRequirement : task.getSkillrequirementsWithSoftConstraints()) {
-                        Map<SkillRequirement, List<Volunteer>> m = task
-                                .getVolunteersThatDontFullFillMinimumProficiencyForSkillRequirement();
+                        Map<SkillRequirement, List<Volunteer>> m = task.getVolunteersThatDontFullFillMinimumProficiencyForSkillRequirement();
                         List<Volunteer> volunteerList = m.get(skillRequirement);
                         if (volunteerList.contains(volunteer)) {
+                            System.out.println("Added to expr2");
+                            // TODO: In de file zijn deze gewichten negatief dus ga na of dat zo hoort
                             expr2.addTerm(skillRequirement.getWeight(), x_vt[v][t]);
                         }
                     }
+
                 }
             }
         }
+
 
         // Expr 3
         expr3.addTerm(w_gend, y);
@@ -330,14 +339,16 @@ public class Main {
         objectiveFunction2.add(expr2);
         objectiveFunction2.add(expr3);
 
+        // TODO GA NA OF INDEX EN PRIORITY ARGUMENT JUIST ZIJN
         // Doelfunctie 1 (maximaliseren met prioriteit 1)
-        model.setObjectiveN(objectiveFunction1, 0, 1, 1.0, 0.0, 0.0, "Objective1");
+        model.setObjectiveN(objectiveFunction1, 0, 0, 1.0, 0, 0, "Objective1");
 
         // Doelfunctie 2 (minimaliseren met prioriteit 2)
-        model.setObjectiveN(objectiveFunction2, 1, 2, -1.0, 0.0, 0.0, "Objective2");
+        model.setObjectiveN(objectiveFunction2, 1, 1, -1.0, 0, 0, "Objective2");
 
         model.update();
         model.optimize();
+
 
         System.out.println("Aantal Constraints: " + List.of(model.getConstrs()).size());
         // Controleer of het model infeasible is
@@ -362,12 +373,10 @@ public class Main {
             for (int v = 0; v < volunteers.size(); v++) {
                 for (int t = 0; t < tasks.size(); t++) {
                     double val = x_vt[v][t].get(GRB.DoubleAttr.X);
-                    // System.out.println("x_vt[" + v + "][" + t + "] = " + val);
                     Volunteer volunteer = volunteers.get(v);
                     Task task = tasks.get(t);
                     if (val == 1)
-                        System.out.println(
-                                "Vrijwilliger " + volunteer.getId() + " is toegewezen aan task " + task.getId());
+                        System.out.println("Vrijwilliger " + volunteer.getId() + " is toegewezen aan task " + task.getId());
                 }
             }
         }
@@ -406,6 +415,7 @@ public class Main {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
 
         model.dispose();
         env.dispose();

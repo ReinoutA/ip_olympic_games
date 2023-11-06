@@ -1,0 +1,287 @@
+{
+    "weights": {
+        "travelDistanceWeight": 50.0,
+        "genderBalanceWeight": 1.0,
+        "taskTypeAdequacyWeight": 25.0
+    },
+    "skills": ["Language - English", "Medical skills", "Language - Spanish", "Language - French", "age"],
+    "taskTypes": ["medical", "administrative"],
+    "locations": [{
+            "id": "OAL_FR_28801",
+            "lat": 45.607073,
+            "lon": 5.147747
+        }, {
+            "id": "OAL_FR_43189",
+            "lat": 46.13156,
+            "lon": 3.846361
+        }, {
+            "id": "75020",
+            "lat": 48.863457789,
+            "lon": 2.401155799
+        }, {
+            "id": "OAL_FR_9219",
+            "lat": 47.080397,
+            "lon": 1.492103
+        }, {
+            "id": "48.971-2.521",
+            "lat": 48.971,
+            "lon": 2.521
+        }, {
+            "id": "59600",
+            "lat": 50.288270591,
+            "lon": 4.019796518
+        }, {
+            "id": "48.856-2.352",
+            "lat": 48.856,
+            "lon": 2.352
+        }, {
+            "id": "OAL_FR_54071",
+            "lat": 49.690301,
+            "lon": 3.388837
+        }, {
+            "id": "54710",
+            "lat": 48.629899899,
+            "lon": 6.203018672
+        }, {
+            "id": "58640",
+            "lat": 47.037171544,
+            "lon": 3.143816706
+        }, {
+            "id": "54000",
+            "lat": 48.690068976,
+            "lon": 6.175258299
+        }, {
+            "id": "77150",
+            "lat": 48.749170435,
+            "lon": 2.615962185
+        }
+    ],
+    "tasks": [{
+            "id": "AB7C0FB0-0F5E-47BB-B901-9E7959B8146E",
+            "locationId": "48.971-2.521",
+            "demand": 9,
+            "days": 3,
+            "taskTypeId": "administrative",
+            "skillRequirements": [{
+                    "skillId": "age",
+                    "minProficiency": 18,
+                    "isHard": true,
+                    "proportion": 1.0,
+                    "weight": -1.0
+                }, {
+                    "skillId": "Language - Spanish",
+                    "minProficiency": 3,
+                    "isHard": true,
+                    "proportion": 0.05,
+                    "weight": -1.0
+                }, {
+                    "skillId": "Language - French",
+                    "minProficiency": 4,
+                    "isHard": true,
+                    "proportion": 1.0,
+                    "weight": -1.0
+                }, {
+                    "skillId": "Language - English",
+                    "minProficiency": 4,
+                    "isHard": true,
+                    "proportion": 0.4,
+                    "weight": -1.0
+                }
+            ]
+        }, {
+            "id": "EC6BD1B7-E239-44B8-A5CA-B195F7D7297B",
+            "locationId": "48.856-2.352",
+            "demand": 5,
+            "days": 3,
+            "taskTypeId": "medical",
+            "skillRequirements": [{
+                    "skillId": "Medical skills",
+                    "minProficiency": 33,
+                    "isHard": true,
+                    "proportion": 1.0,
+                    "weight": -1.0
+                }, {
+                    "skillId": "Language - French",
+                    "minProficiency": 5,
+                    "isHard": false,
+                    "proportion": 0.0,
+                    "weight": 100.0
+                }, {
+                    "skillId": "Language - English",
+                    "minProficiency": 4,
+                    "isHard": false,
+                    "proportion": -0.01,
+                    "weight": 100.0
+                }
+            ]
+        }
+    ],
+    "volunteers": [{
+            "id": "1275874",
+            "isMale": false,
+            "isPresourced": false,
+            "locationId": "OAL_FR_43189",
+            "preferredLocationIds": ["48.971-2.521"],
+            "availableDays": 3,
+            "skills": {
+                "Language - English": 5,
+                "Language - Spanish": 5,
+                "Language - French": 3,
+                "age": 24
+            },
+            "taskTypes": {
+                "medical": 0,
+                "administrative": 62
+            }
+        }, {
+            "id": "1064637",
+            "isMale": true,
+            "isPresourced": false,
+            "locationId": "58640",
+            "preferredLocationIds": ["48.856-2.352", "48.971-2.521"],
+            "availableDays": 3,
+            "skills": {
+                "Language - English": 3,
+                "Medical skills": 40,
+                "Language - French": 6,
+                "age": 31
+            },
+            "taskTypes": {
+                "medical": 61,
+                "administrative": 58
+            }
+        }, {
+            "id": "1320894",
+            "isMale": false,
+            "isPresourced": false,
+            "locationId": "OAL_FR_54071",
+            "preferredLocationIds": ["48.856-2.352", "48.971-2.521"],
+            "availableDays": 4,
+            "skills": {
+                "Language - English": 2,
+                "Language - Spanish": 5,
+                "Language - French": 1,
+                "age": 41
+            },
+            "taskTypes": {
+                "medical": 64,
+                "administrative": 51
+            }
+        }, {
+            "id": "1137913",
+            "isMale": false,
+            "isPresourced": false,
+            "locationId": "54710",
+            "preferredLocationIds": ["48.856-2.352", "48.971-2.521"],
+            "availableDays": 3,
+            "skills": {
+                "Language - English": 2,
+                "Language - French": 6,
+                "age": 27
+            },
+            "taskTypes": {
+                "medical": 70,
+                "administrative": 73
+            }
+        }, {
+            "id": "1267376",
+            "isMale": false,
+            "isPresourced": false,
+            "locationId": "54000",
+            "preferredLocationIds": ["48.856-2.352", "48.971-2.521"],
+            "availableDays": 3,
+            "skills": {
+                "Language - English": 4,
+                "Language - French": 6,
+                "age": 22
+            },
+            "taskTypes": {
+                "medical": 0,
+                "administrative": 55
+            }
+        }, {
+            "id": "1218514",
+            "isMale": false,
+            "isPresourced": false,
+            "locationId": "OAL_FR_28801",
+            "preferredLocationIds": ["48.856-2.352", "48.971-2.521"],
+            "availableDays": 4,
+            "skills": {
+                "Language - English": 5,
+                "Language - Spanish": 4,
+                "Language - French": 1,
+                "age": 53
+            },
+            "taskTypes": {
+                "medical": 61,
+                "administrative": 55
+            }
+        }, {
+            "id": "1102554",
+            "isMale": true,
+            "isPresourced": false,
+            "locationId": "75020",
+            "preferredLocationIds": ["48.856-2.352", "48.971-2.521"],
+            "availableDays": 3,
+            "skills": {
+                "Language - English": 5,
+                "Language - Spanish": 2,
+                "Language - French": 6,
+                "age": 30
+            },
+            "taskTypes": {
+                "medical": 0,
+                "administrative": 70
+            }
+        }, {
+            "id": "1131938",
+            "isMale": false,
+            "isPresourced": false,
+            "locationId": "OAL_FR_9219",
+            "preferredLocationIds": ["48.971-2.521"],
+            "availableDays": 5,
+            "skills": {
+                "Language - English": 4,
+                "Language - French": 2,
+                "age": 22
+            },
+            "taskTypes": {
+                "medical": 61,
+                "administrative": 66
+            }
+        }, {
+            "id": "1056112",
+            "isMale": true,
+            "isPresourced": false,
+            "locationId": "77150",
+            "preferredLocationIds": ["48.856-2.352", "48.971-2.521"],
+            "availableDays": 3,
+            "skills": {
+                "Language - English": 3,
+                "Language - French": 6,
+                "age": 63
+            },
+            "taskTypes": {
+                "medical": 58,
+                "administrative": 51
+            }
+        }, {
+            "id": "1135473",
+            "isMale": false,
+            "isPresourced": false,
+            "locationId": "59600",
+            "preferredLocationIds": ["48.856-2.352", "48.971-2.521"],
+            "availableDays": 5,
+            "skills": {
+                "Language - English": 3,
+                "Language - Spanish": 3,
+                "Language - French": 6,
+                "age": 19
+            },
+            "taskTypes": {
+                "medical": 0,
+                "administrative": 73
+            }
+        }
+    ]
+}
