@@ -1,7 +1,6 @@
 package instances;
 
 import java.util.*;
-import java.util.stream.StreamSupport;
 
 public class Task {
     private String id;

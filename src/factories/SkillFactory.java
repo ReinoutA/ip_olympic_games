@@ -1,25 +1,21 @@
 package factories;
 
-import instances.Skill;
+import instances.*;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
+import org.json.*;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
+import java.nio.file.*;
+import java.util.*;
 
 public class SkillFactory {
     public List<Skill> createSkillsFromJSON(String json) throws IOException {
         List<Skill> skills = new ArrayList<>();
 
         String jsonContent = new String(Files.readAllBytes(Paths.get(json)));
-        // Converteer de JSON-string naar een JSON-object
+
         JSONObject jsonData = new JSONObject(jsonContent);
 
-        // Haal de JSON-array "skills" op
         JSONArray skillsArray = jsonData.getJSONArray("skills");
 
         for (int i = 0; i < skillsArray.length(); i++) {

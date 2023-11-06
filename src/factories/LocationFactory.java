@@ -13,14 +13,10 @@ public class LocationFactory {
         List<Location> locations = new ArrayList<>();
 
         String jsonContent = new String(Files.readAllBytes(Paths.get(json)));
-
-        // Converteer de JSON-string naar een JSON-object
         JSONObject jsonData = new JSONObject(jsonContent);
 
-        // Haal de JSON-array "locations" op
         JSONArray locationsArray = jsonData.getJSONArray("locations");
 
-        // Loop door de array en maak Location-objecten
         for (int i = 0; i < locationsArray.length(); i++) {
             JSONObject locationData = locationsArray.getJSONObject(i);
 
