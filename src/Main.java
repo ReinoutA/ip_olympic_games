@@ -7,6 +7,7 @@ import org.json.JSONObject;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.StreamSupport;
 
 public class Main {
     public Main() throws GRBException {
@@ -14,8 +15,8 @@ public class Main {
 
     public static void main(String[] args) throws IOException, GRBException {
 
-        final String PATH = "IP_Olympic_Games/resources/toy_problem2.json";
-        //final String PATH = "IP_Olympic_Games/resources/i0_200t_5000v.json";
+        //final String PATH = "IP_Olympic_Games/resources/toy_problem2.json";
+        final String PATH = "IP_Olympic_Games/resources/i0_200t_5000v.json";
         // final String PATH = "IP_Olympic_Games/resources/dummy.json";
         LocationFactory locationFactory = new LocationFactory();
         SkillFactory skillFactory = new SkillFactory();
@@ -113,6 +114,7 @@ public class Main {
         GRBVar y = model.addVar(0, volunteers.size(), 0.0, GRB.INTEGER, "y");
 
 
+
         // Constraint 1
         for (int v = 0; v < volunteers.size(); v++) {
             GRBLinExpr assignmentConstraint = new GRBLinExpr();
@@ -146,38 +148,38 @@ public class Main {
         for (int t = 0; t < tasks.size(); t++) {
             GRBLinExpr constraint = new GRBLinExpr();
             for (int v = 0; v < volunteers.size(); v++) {
-                //if (tasks.get(t).getCanBeDoneByVolunteers().contains(volunteers.get(v))) {
-                constraint.addTerm(1.0, x_vt[v][t]);
-                //}
+                if (tasks.get(t).getCanBeDoneByVolunteers().contains(volunteers.get(v))) {
+                    constraint.addTerm(1.0, x_vt[v][t]);
+                }
             }
             model.addConstr(constraint, GRB.LESS_EQUAL, tasks.get(t).getDemand(), "Constraint3_" + t);
         }
 
 
         // Constraint 4
-        for (int t = 0; t < tasks.size(); t++) {
-            for (SkillRequirement skillRequirement : tasks.get(t).getSkillrequirementsWithHardConstraints()) {
-                String skillId = skillRequirement.getSkillid();
-                GRBLinExpr exprLeft = new GRBLinExpr();
-                GRBLinExpr exprRight = new GRBLinExpr();
-                double fraction = tasks.get(t).getSkillRequirement(skillId).getProportion();
-                for (int v = 0; v < volunteers.size(); v++) {
-                    if (tasks.get(t).getVolunteersThatFullFillMinimumProficiencyForSkillRequirement().containsKey(skillRequirement)) {
-                        List<Volunteer> volunteersThatFullFillMinProf = tasks.get(t).getVolunteersThatFullFillMinimumProficiencyForSkillRequirement().get(skillRequirement);
-                        if (volunteersThatFullFillMinProf.contains(volunteers.get(v))) {
-                            exprLeft.addTerm(1.0, x_vt[v][t]);
+        for(int t = 0; t < tasks.size(); t++){
+            for(String skill : tasks.get(t).getSkillRequirementsSkillIds()){
+                GRBLinExpr exprL = new GRBLinExpr();
+                GRBLinExpr exprR = new GRBLinExpr();
+                double fraction = tasks.get(t).getSkillRequirement(skill).getProportion();
+                for(int v = 0; v < volunteers.size(); v++){
+                    if(tasks.get(t).getVolunteersThatFullFillMinimumProficiencyForSkillRequirement().containsKey(tasks.get(t).getSkillRequirement(skill))) {
+                        List<Volunteer> vol = tasks.get(t).getVolunteersThatFullFillMinimumProficiencyForSkillRequirement().get(tasks.get(t).getSkillRequirement(skill));
+                        if(vol.contains(volunteers.get(v))) {
+                            exprL.addTerm(1.0, x_vt[v][t]);
+
+                        }
+                        if(tasks.get(t).getCanBeDoneByVolunteers().contains(volunteers.get(v))){
+                            exprR.addTerm(fraction, x_vt[v][t]);
                         }
                     }
+
                 }
-                for (int v = 0; v < volunteers.size(); v++) {
-                    if (volunteers.get(v).getCanDoTasks().contains(tasks.get(t))) {
-                        exprRight.addTerm(fraction, x_vt[v][t]);
-                    }
-                }
-                model.addConstr(exprLeft, GRB.GREATER_EQUAL, exprRight, "Constraint4_" + t);
+                model.addConstr(exprL, GRB.GREATER_EQUAL, exprR, "Constraint4");
             }
         }
 
+        /*
         // Constraint 5
         for (int t = 0; t < tasks.size(); t++) {
             GRBLinExpr exprLeft = new GRBLinExpr();
@@ -199,6 +201,7 @@ public class Main {
         }
 
 
+
         // Constraint 6
         for (int t = 0; t < tasks.size(); t++) {
             GRBLinExpr exprLeft = new GRBLinExpr();
@@ -218,6 +221,30 @@ public class Main {
             }
             model.addConstr(exprLeft, GRB.GREATER_EQUAL, exprRight, "Constraint6_" + t);
         }
+        */
+
+
+        GRBLinExpr exprIsMale = new GRBLinExpr();
+        GRBLinExpr exprLow = new GRBLinExpr();
+        GRBLinExpr exprHigh = new GRBLinExpr();
+        GRBLinExpr exprDiff = new GRBLinExpr();
+
+        for(int v = 0; v < volunteers.size(); v++){
+            for(int t = 0; t < tasks.size(); t++){
+                if(maleVolunteers.contains(volunteers.get(v))){
+                    exprIsMale.addTerm(1.0, x_vt[v][t]);
+                    exprDiff.addTerm(-1.0, x_vt[v][t]);
+                }
+
+                else exprDiff.addTerm(1.0, x_vt[v][t]);
+
+                exprLow.addTerm(0.45, x_vt[v][t]);
+                exprHigh.addTerm(0.55, x_vt[v][t]);
+            }
+        }
+        model.addConstr(exprIsMale, GRB.LESS_EQUAL, exprHigh, "CONSTRAINT6");
+        model.addConstr(exprIsMale, GRB.GREATER_EQUAL, exprLow, "CONSTRAINT 7");
+
 
 
         // Constraint 7
@@ -249,10 +276,13 @@ public class Main {
             model.addGenConstrAbs(y, differenceVar, "Constraint7_" + t);
         }
 
+
+
         // Constraint EXTRA
 
         // Constraint om ervoor te zorgen dat x_vt 0 is als een vrijwilliger niet
         // beschikbaar, taaktypegeschiktheid 0 heeft, niet die locatie als voorkeurslocatie heeft..
+
 
         for (int v = 0; v < volunteers.size(); v++) {
             for (int t = 0; t < tasks.size(); t++) {
@@ -263,6 +293,10 @@ public class Main {
                 }
             }
         }
+
+
+
+
 
         // Doelfunctie 1
         GRBLinExpr objectiveFunction1 = new GRBLinExpr();
@@ -341,10 +375,10 @@ public class Main {
 
         // TODO GA NA OF INDEX EN PRIORITY ARGUMENT JUIST ZIJN
         // Doelfunctie 1 (maximaliseren met prioriteit 1)
-        model.setObjectiveN(objectiveFunction1, 0, 0, 1.0, 0, 0, "Objective1");
+        model.setObjectiveN(objectiveFunction1, 0, 1, 1, 1e-6, 0, "Objective1");
 
         // Doelfunctie 2 (minimaliseren met prioriteit 2)
-        model.setObjectiveN(objectiveFunction2, 1, 1, -1.0, 0, 0, "Objective2");
+        model.setObjectiveN(objectiveFunction2, 1, 0, -1, 1e-6, 0, "Objective2");
 
         model.update();
         model.optimize();
@@ -408,10 +442,10 @@ public class Main {
 
         try {
             // Schrijf de JSON-tekst naar een bestand met de naam "result.json"
-            FileWriter fileWriter = new FileWriter("result.json");
+            FileWriter fileWriter = new FileWriter("result2.json");
             fileWriter.write(resultJSONString);
             fileWriter.close();
-            System.out.println("Result JSON is opgeslagen in result.json");
+            System.out.println("Result JSON is opgeslagen in result2.json");
         } catch (IOException e) {
             e.printStackTrace();
         }
