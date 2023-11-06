@@ -15,8 +15,8 @@ public class Main {
 
     public static void main(String[] args) throws IOException, GRBException {
 
-        final String PATH = "IP_Olympic_Games/resources/toy_problem2.json";
-        //final String PATH = "IP_Olympic_Games/resources/i0_200t_5000v.json";
+        //final String PATH = "IP_Olympic_Games/resources/toy_problem2.json";
+        final String PATH = "IP_Olympic_Games/resources/i0_200t_5000v.json";
         // final String PATH = "IP_Olympic_Games/resources/dummy.json";
         LocationFactory locationFactory = new LocationFactory();
         SkillFactory skillFactory = new SkillFactory();
@@ -179,71 +179,27 @@ public class Main {
             }
         }
 
-        /*
-        // Constraint 5
-        for (int t = 0; t < tasks.size(); t++) {
-            GRBLinExpr exprLeft = new GRBLinExpr();
-            GRBLinExpr exprRight = new GRBLinExpr();
-
-            for (int v = 0; v < volunteers.size(); v++) {
-                if (tasks.get(t).getCanBeDoneByVolunteers().contains(volunteers.get(v))) {
-                    exprLeft.addTerm(0.45, x_vt[v][t]);
-                }
-            }
-
-            for (int v = 0; v < volunteers.size(); v++) {
-                if (tasks.get(t).getCanBeDoneByVolunteers().contains(volunteers.get(v))
-                        && maleVolunteers.contains(volunteers.get(v))) {
-                    exprRight.addTerm(1.0, x_vt[v][t]);
-                }
-            }
-            model.addConstr(exprLeft, GRB.LESS_EQUAL, exprRight, "Constraint5_" + t);
-        }
-
-
-
-        // Constraint 6
-        for (int t = 0; t < tasks.size(); t++) {
-            GRBLinExpr exprLeft = new GRBLinExpr();
-            GRBLinExpr exprRight = new GRBLinExpr();
-
-            for (int v = 0; v < volunteers.size(); v++) {
-                if (tasks.get(t).getCanBeDoneByVolunteers().contains(volunteers.get(v))) {
-                    exprLeft.addTerm(0.55, x_vt[v][t]);
-                }
-            }
-
-            for (int v = 0; v < volunteers.size(); v++) {
-                if (tasks.get(t).getCanBeDoneByVolunteers().contains(volunteers.get(v))
-                        && maleVolunteers.contains(volunteers.get(v))) {
-                    exprRight.addTerm(1.0, x_vt[v][t]);
-                }
-            }
-            model.addConstr(exprLeft, GRB.GREATER_EQUAL, exprRight, "Constraint6_" + t);
-        }
-        */
-
-
-        GRBLinExpr exprIsMale = new GRBLinExpr();
-        GRBLinExpr exprLow = new GRBLinExpr();
+        // Constraint 5 and 6
+        GRBLinExpr exprDiffer = new GRBLinExpr();
+        GRBLinExpr ExprMale = new GRBLinExpr();
         GRBLinExpr exprHigh = new GRBLinExpr();
-        GRBLinExpr exprDiff = new GRBLinExpr();
+        GRBLinExpr exprLow = new GRBLinExpr();
 
         for(int v = 0; v < volunteers.size(); v++){
             for(int t = 0; t < tasks.size(); t++){
                 if(maleVolunteers.contains(volunteers.get(v))){
-                    exprIsMale.addTerm(1.0, x_vt[v][t]);
-                    exprDiff.addTerm(-1.0, x_vt[v][t]);
+                    ExprMale.addTerm(1.0, x_vt[v][t]);
+                    exprDiffer.addTerm(-1.0, x_vt[v][t]);
                 }
 
-                else exprDiff.addTerm(1.0, x_vt[v][t]);
+                else exprDiffer.addTerm(1.0, x_vt[v][t]);
 
                 exprLow.addTerm(0.45, x_vt[v][t]);
                 exprHigh.addTerm(0.55, x_vt[v][t]);
             }
         }
-        model.addConstr(exprIsMale, GRB.LESS_EQUAL, exprHigh, "CONSTRAINT6");
-        model.addConstr(exprIsMale, GRB.GREATER_EQUAL, exprLow, "CONSTRAINT 7");
+        model.addConstr(ExprMale, GRB.LESS_EQUAL, exprHigh, "CONSTRAINT6");
+        model.addConstr(ExprMale, GRB.GREATER_EQUAL, exprLow, "CONSTRAINT7");
 
 
 
