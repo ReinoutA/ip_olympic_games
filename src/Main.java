@@ -15,8 +15,8 @@ public class Main {
 
     public static void main(String[] args) throws IOException, GRBException {
 
-        //final String PATH = "IP_Olympic_Games/resources/toy_problem2.json";
-        final String PATH = "IP_Olympic_Games/resources/i0_200t_5000v.json";
+        final String PATH = "IP_Olympic_Games/resources/toy_problem2.json";
+        //final String PATH = "IP_Olympic_Games/resources/i0_200t_5000v.json";
         // final String PATH = "IP_Olympic_Games/resources/dummy.json";
         LocationFactory locationFactory = new LocationFactory();
         SkillFactory skillFactory = new SkillFactory();
@@ -338,7 +338,7 @@ public class Main {
                     int f_vt = haversine.calculateDistance(volunteerLocation.getLon(), volunteerLocation.getLat(), taskLocation.getLon(), taskLocation.getLat());
                     String taskTypeId = task.getTaskTypeId();
                     int q_vnt = volunteer.getScoreOfTaskType(taskTypeId);
-                    expr1.addTerm(w_dist * f_vt, x_vt[v][t]);
+                    expr1.addTerm(w_dist * f_vt * 2 * task.getDays(), x_vt[v][t]);
                     expr1.addTerm(-w_type * q_vnt, x_vt[v][t]);
                }
             }
