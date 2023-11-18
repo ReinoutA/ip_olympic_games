@@ -94,6 +94,9 @@ public class Feasibility {
         env.set(GRB.IntParam.OutputFlag, 1);
         env.start();
         GRBModel model = new GRBModel(env);
+        //model.set(GRB.DoubleParam.Heuristics, 0.8);
+        model.set(GRB.DoubleParam.MIPGap, 0.01);
+
 
         // ================================================
         // ========= 1. BESLISSINGSVARIABELEN =============
