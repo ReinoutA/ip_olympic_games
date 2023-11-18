@@ -7,8 +7,8 @@ import java.io.*;
 import java.util.*;
 
 
-// AUTHORS: REINOUT ANNAERT & BRECHT VAN DE SIJPE
-// MORE INFO IN README.md
+// GROEPSLEDEN: REINOUT ANNAERT & BRECHT VAN DE SIJPE
+// INFO IN README.md
 
 public class Main {
     public Main() {
@@ -16,7 +16,7 @@ public class Main {
 
     public static void main(String[] args) throws IOException, GRBException {
 
-        //final String PATH = "IP_Olympic_Games/resources/toy_problem2.json";
+         // final String PATH = "IP_Olympic_Games/resources/p0_200t_5000v.json";
          final String PATH = "IP_Olympic_Games/resources/i0_200t_5000v.json";
 
         // =========================================
@@ -347,7 +347,6 @@ public class Main {
 
         // Doelfunctie 2 (minimaliseren met prioriteit 0)
         model.setObjectiveN(objectiveFunction2, 1, 0, -1, 1e-6, 0, "Objective2");
-
         model.update();
         model.optimize();
 
